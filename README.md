@@ -57,10 +57,3 @@ Na następne wydarzenie: podmień teksty/datę w `index.html` (sekcja `.event`, 
 Состояния `closed → opening → open → closing`; анимируются только `transform`/`opacity`; reduced-motion — мгновенная смена.
 **Ссылка «POBIERZ ZDJĘCIA»:** атрибут `data-download-href=""` у `<section class="gal">`. Пока пусто — кнопка в состоянии «wkrótce».
 **Фото следующего события:** замените 8 файлов в `assets/gallery-reveal/photos/` и `alt` в `index.html`.
-
-## Блок 3: билет / бронирование (`#bilety` на `/private/`)
-
-Фронтенд: секция `.tb` в `private-content/index.html`, `tickets.css`, `tickets.js` (все тексты и данные события — один объект `CONTENT` в начале `tickets.js`), ассеты `private-content/assets/tickets/`.
-Backend: `api/tickets.js` (`/api/tickets/{status,validate,checkout,reserve}`) → адаптер `api/_tickets.js`. **Сейчас это DEMO-адаптер:** нет оплаты, нет записи броней; QR-билет не выдаётся.
-Env (только сервер): `TICKET_DEMO_INVITES` (JSON с кодами, ценой, лимитом мест), `TICKET_SEATS_AVAILABLE`, `EVENT_MEMBER_TERMS`, `TICKET_MEMBER_MAX_SEATS`. Без `TICKET_DEMO_INVITES` любой код считается неверным.
-Чтобы подключить реальный бэкенд/оплату — замените `demoAdapter` в `api/_tickets.js` (интерфейс описан в начале файла); QR выдавать только после webhook оператора.

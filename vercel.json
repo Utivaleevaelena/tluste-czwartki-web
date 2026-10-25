@@ -1,46 +1,17 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "outputDirectory": "public",
-  "functions": {
-    "api/private.js": {
-      "includeFiles": "private-content/**"
-    }
-  },
+  "functions": { "api/private.js": { "includeFiles": "private-content/**" } },
   "rewrites": [
-    {
-      "source": "/api/tickets/:action",
-      "destination": "/api/tickets?action=:action"
-    },
-    {
-      "source": "/api/members/verify",
-      "destination": "/api/verify"
-    },
-    {
-      "source": "/private",
-      "destination": "/api/private"
-    },
-    {
-      "source": "/private/",
-      "destination": "/api/private"
-    },
-    {
-      "source": "/private/:path*",
-      "destination": "/api/private?p=:path*"
-    }
+    { "source": "/api/members/verify", "destination": "/api/verify" },
+    { "source": "/private", "destination": "/api/private" },
+    { "source": "/private/", "destination": "/api/private" },
+    { "source": "/private/:path*", "destination": "/api/private?p=:path*" }
   ],
   "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "Referrer-Policy",
-          "value": "strict-origin-when-cross-origin"
-        }
-      ]
-    }
+    { "source": "/(.*)", "headers": [
+      { "key": "X-Content-Type-Options", "value": "nosniff" },
+      { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+    ] }
   ]
 }
