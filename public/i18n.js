@@ -251,8 +251,8 @@
     document.body.appendChild(sw);
     let saved = null; try { saved = localStorage.getItem(STORE); } catch {}
     const q = new URLSearchParams(location.search).get('lang');
-    const browserPl = /^pl\b/i.test(navigator.language || '');
-    const initial = q === 'en' || q === 'pl' ? q : saved === 'en' || saved === 'pl' ? saved : browserPl ? 'pl' : 'en';
+    // domyślnie polski; angielski tylko po wyborze przełącznikiem lub adresem ?lang=en
+    const initial = q === 'en' || q === 'pl' ? q : saved === 'en' || saved === 'pl' ? saved : 'pl';
     mo.observe(document.documentElement, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ATTRS });
     lang = 'pl'; paint();
     setLang(initial, !!q || !!saved);
