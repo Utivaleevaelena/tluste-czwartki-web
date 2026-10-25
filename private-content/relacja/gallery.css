@@ -13,8 +13,8 @@
   --gallery-focus: #f1d39b;
   --gallery-serif: "Bodoni Moda", "Times New Roman", serif;
   --gallery-sans: "Manrope", "Helvetica Neue", Arial, sans-serif;
-  --gallery-ease: cubic-bezier(.22, 1, .36, 1);
-  --gallery-open-duration: 1100ms;
+  --gallery-ease: cubic-bezier(.45, .05, .25, 1);
+  --gallery-open-duration: 1760ms;
 }
 *, *::before, *::after { box-sizing: border-box; }
 html, body { margin: 0; background: var(--gallery-bg); color: var(--gallery-ivory); }
@@ -36,25 +36,26 @@ html, body { margin: 0; background: var(--gallery-bg); color: var(--gallery-ivor
 .gal__attendant { position: absolute; inset: 0; z-index: 4; }
 .gal__curtain--left, .gal__curtain--right { z-index: 3; }
 
+/* Tempo: wszystkie czasy ×1.6 względem pierwszej wersji, łagodniejsza krzywa (wolny start i miękkie lądowanie) */
 /* stan wyjściowy i powrót (closed / closing) */
-.gal__curtain, .gal__attendant { transition: transform var(--gallery-open-duration) var(--gallery-ease), opacity 600ms ease; }
-.gal__attendant { transition: transform 850ms var(--gallery-ease) 280ms, opacity 500ms ease 280ms; }
-.gal__panel { opacity: 0; transform: scale(.985); visibility: hidden; transition: opacity 380ms ease, transform 380ms ease, visibility 0s linear 380ms; }
-.gal__item, .gal__head, .gal__foot { opacity: 0; transform: translateY(14px); transition: opacity 260ms ease, transform 260ms ease; }
+.gal__curtain, .gal__attendant { transition: transform var(--gallery-open-duration) var(--gallery-ease), opacity 960ms ease; }
+.gal__attendant { transition: transform 1360ms var(--gallery-ease) 450ms, opacity 800ms ease 450ms; }
+.gal__panel { opacity: 0; transform: scale(.985); visibility: hidden; transition: opacity 610ms ease, transform 610ms ease, visibility 0s linear 610ms; }
+.gal__item, .gal__head, .gal__foot { opacity: 0; transform: translateY(14px); transition: opacity 420ms ease, transform 420ms ease; }
 
 /* otwieranie (opening / open) */
 .gal[data-state="opening"] .gal__curtain--left, .gal[data-state="open"] .gal__curtain--left { transform: translate3d(-48%, 0, 0); }
 .gal[data-state="opening"] .gal__curtain--right, .gal[data-state="open"] .gal__curtain--right { transform: translate3d(48%, 0, 0); }
 .gal[data-state="opening"] .gal__attendant, .gal[data-state="open"] .gal__attendant {
-  transform: translate3d(0, 112%, 0); opacity: 0; transition: transform 850ms var(--gallery-ease) 120ms, opacity 700ms ease 280ms;
+  transform: translate3d(0, 112%, 0); opacity: 0; transition: transform 1360ms var(--gallery-ease) 190ms, opacity 1120ms ease 450ms;
 }
 .gal[data-state="opening"] .gal__panel, .gal[data-state="open"] .gal__panel {
-  opacity: 1; transform: none; visibility: visible; transition: opacity 650ms ease 600ms, transform 650ms var(--gallery-ease) 600ms, visibility 0s linear 600ms;
+  opacity: 1; transform: none; visibility: visible; transition: opacity 1040ms ease 960ms, transform 1040ms var(--gallery-ease) 960ms, visibility 0s linear 960ms;
 }
 .gal[data-state="opening"] .gal__head, .gal[data-state="open"] .gal__head,
-.gal[data-state="opening"] .gal__foot, .gal[data-state="open"] .gal__foot { opacity: 1; transform: none; transition: opacity 600ms ease 760ms, transform 600ms var(--gallery-ease) 760ms; }
+.gal[data-state="opening"] .gal__foot, .gal[data-state="open"] .gal__foot { opacity: 1; transform: none; transition: opacity 960ms ease 1220ms, transform 960ms var(--gallery-ease) 1220ms; }
 .gal[data-state="opening"] .gal__item, .gal[data-state="open"] .gal__item {
-  opacity: 1; transform: none; transition: opacity 600ms ease calc(840ms + var(--i) * 55ms), transform 600ms var(--gallery-ease) calc(840ms + var(--i) * 55ms);
+  opacity: 1; transform: none; transition: opacity 960ms ease calc(1340ms + var(--i) * 90ms), transform 960ms var(--gallery-ease) calc(1340ms + var(--i) * 90ms);
 }
 .gal[data-state="open"] .gal__scene--front, .gal[data-state="open"] .gal__scene--btn { visibility: hidden; }
 

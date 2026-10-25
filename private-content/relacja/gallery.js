@@ -11,8 +11,8 @@
   const dl = $('[data-download]');
   const dlNote = $('[data-download-note]');
   const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const OPEN_MS = 1250;   // do końca przesuwu kurtyn i pojawienia się galerii
-  const CLOSE_MS = 1250;
+  const OPEN_MS = 1950;   // do końca przesuwu kurtyn i zejścia obsługi (czasy ×1.6)
+  const CLOSE_MS = 2000;
   let state = 'closed', timer = 0;
 
   /* ── Link do pobrania: tylko prawdziwy adres, bez „#” ── */
