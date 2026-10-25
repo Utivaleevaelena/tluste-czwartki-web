@@ -70,8 +70,9 @@
   Blok „fotogaleria po rozsunięciu kurtyn” (wielokrotnego użytku).
   Następne wydarzenie: podmień 8 zdjęć w assets/gallery-reveal/photos/ (i alt-y poniżej), ewentualnie warstwy sceny w assets/gallery-reveal/scene/.
   Link do pobrania: atrybut data-download-href poniżej (pusty = przycisk pokazuje stan „wkrótce”).
+  Link „ZOBACZ WSZYSTKIE ZDJĘCIA” (ostatni slajd powiększenia): data-photos-href; gdy pusty, używany jest data-download-href.
 -->
-<section class="gal" id="fotogaleria" data-gal data-state="closed" data-download-href="" aria-labelledby="gal-title">
+<section class="gal" id="fotogaleria" data-gal data-state="closed" data-download-href="" data-photos-href="" aria-labelledby="gal-title">
 
   <div class="gal__stage" data-stage>
     <div class="gal__scene" aria-hidden="true">
@@ -163,10 +164,20 @@
 
   <!-- Powiększenie zdjęcia -->
   <dialog class="gal__lightbox" data-lightbox aria-label="Powiększone zdjęcie">
-    <figure>
+    <figure data-lb-fig>
       <img alt="" data-lb-img>
       <figcaption data-lb-cap></figcaption>
     </figure>
+    <!-- Ostatni „slajd”: koło się zamyka — przycisk do pełnej galerii -->
+    <div class="gal__end" data-lb-end hidden>
+      <p class="gal__end-text">To wszystkie zdjęcia w galerii.</p>
+      <a class="gal__end-link" data-all-photos aria-disabled="true">
+        <span>ZOBACZ WSZYSTKIE ZDJĘCIA</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M14 7l5 5-5 5"/></svg>
+      </a>
+      <p class="gal__end-note" data-all-photos-note>Link do wszystkich zdjęć będzie dostępny wkrótce.</p>
+      <button class="gal__end-restart" type="button" data-lb-restart>OBEJRZYJ OD POCZĄTKU</button>
+    </div>
     <button class="gal__lb-btn gal__lb-btn--prev" type="button" aria-label="Poprzednie zdjęcie" data-lb-prev><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
     <button class="gal__lb-btn gal__lb-btn--next" type="button" aria-label="Następne zdjęcie" data-lb-next><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
     <button class="gal__lb-btn gal__lb-btn--close" type="button" aria-label="Zamknij powiększenie" data-lb-close><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>

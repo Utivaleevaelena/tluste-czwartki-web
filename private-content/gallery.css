@@ -170,3 +170,24 @@ html, body { margin: 0; background: var(--gallery-bg); color: var(--gallery-ivor
   .gal *, .gal *::before, .gal *::after { transition: none !important; animation: none !important; }
   .gal__thumb:hover img { transform: none; }
 }
+
+/* ── Ostatni slajd powiększenia: koło się zamyka ──── */
+.gal__end { display: grid; justify-items: center; gap: 18px; padding: 24px; text-align: center; max-width: 92vw; }
+.gal__end[hidden] { display: none; }
+.gal__end-text { margin: 0; font: 800 clamp(26px, 3.4vw, 48px) / 1.05 var(--gallery-serif); color: var(--gallery-ivory); }
+.gal__end-link {
+  display: inline-flex; align-items: center; justify-content: center; gap: 14px; min-height: 54px; padding: 0 clamp(24px, 3vw, 44px);
+  font: 700 clamp(12px, 1vw, 16px) / 1 var(--gallery-sans); letter-spacing: .18em; color: #f6e8cc; text-decoration: none;
+  background: var(--gallery-red); border: 1px solid var(--gallery-brass); border-radius: 2px; transition: background 180ms ease, transform 120ms ease;
+}
+.gal__end-link svg { width: 22px; height: 22px; transition: transform 220ms var(--gallery-ease); }
+.gal__end-link[href]:hover { background: var(--gallery-red-hover); }
+.gal__end-link[href]:hover svg { transform: translateX(5px); }
+.gal__end-link[href]:active { background: var(--gallery-red-active); transform: translateY(1px); }
+.gal__end-link:focus-visible { outline: 2px solid var(--gallery-focus); outline-offset: 4px; }
+.gal__end-link[aria-disabled="true"] { opacity: .5; cursor: not-allowed; background: #2a1a1a; border-color: rgb(201 150 69 / .35); }
+.gal__end-note { margin: -6px 0 0; font: 500 12px / 1.4 var(--gallery-sans); letter-spacing: .08em; color: var(--gallery-muted); }
+.gal__end-note[hidden] { display: none; }
+.gal__end-restart { min-height: 44px; padding: 0 6px 6px; cursor: pointer; background: none; border: 0; border-bottom: 1px solid var(--gallery-brass); font: 600 11px / 1 var(--gallery-sans); letter-spacing: .2em; color: var(--gallery-ivory); }
+.gal__end-restart:hover { color: #fff; border-bottom-color: var(--gallery-brass-light); }
+.gal__end-restart:focus-visible { outline: 2px solid var(--gallery-focus); outline-offset: 4px; }

@@ -61,22 +61,45 @@
   root.addEventListener('keydown', (e) => { if (e.key === 'Escape' && state === 'open' && !lb.open) close(); });
   set('closed');
 
-  /* ── Powiększenie zdjęcia ── */
+  /* ── Powiększenie zdjęcia (po ostatnim zdjęciu — slajd z linkiem do wszystkich zdjęć) ── */
   const lb = $('[data-lightbox]');
   const lbImg = $('[data-lb-img]');
   const lbCap = $('[data-lb-cap]');
+  const lbFig = $('[data-lb-fig]');
+  const lbEnd = $('[data-lb-end]');
+  const allLink = $('[data-all-photos]');
+  const allNote = $('[data-all-photos-note]');
   const thumbs = [...root.querySelectorAll('.gal__thumb')];
+  const slides = thumbs.length + 1;          // zdjęcia + slajd końcowy
   let cur = 0, lastThumb = null;
-  function show(i) {
-    cur = (i + thumbs.length) % thumbs.length;
+
+  // „Zobacz wszystkie zdjęcia”: data-photos-href, a gdy pusty — ten sam link co do pobrania
+  const photosHref = (root.dataset.photosHref || root.dataset.downloadHref || '').trim();
+  if (photosHref) {
+    allLink.setAttribute('href', photosHref);
+    allLink.removeAttribute('aria-disabled');
+    if (/^https?:\/\//i.test(photosHref) && new URL(photosHref, location.href).origin !== location.origin) { allLink.target = '_blank'; allLink.rel = 'noopener noreferrer'; }
+    allNote.hidden = true;
+  }
+  allLink.addEventListener('click', (e) => { if (!allLink.hasAttribute('href')) e.preventDefault(); });
+
+  function show(i, focusEnd) {
+    cur = ((i % slides) + slides) % slides;
+    const isEnd = cur === thumbs.length;
+    lbFig.hidden = isEnd; lbEnd.hidden = !isEnd;
+    if (isEnd) {
+      if (focusEnd) (allLink.hasAttribute('href') ? allLink : $('[data-lb-restart]')).focus({ preventScroll: true });
+      return;
+    }
     const im = thumbs[cur].querySelector('img');
     lbImg.src = im.currentSrc || im.src; lbImg.alt = im.alt; lbCap.textContent = `${cur + 1} / ${thumbs.length} — ${im.alt}`;
   }
   thumbs.forEach((t, i) => t.addEventListener('click', () => { lastThumb = t; show(i); lb.showModal(); }));
-  $('[data-lb-prev]').addEventListener('click', () => show(cur - 1));
-  $('[data-lb-next]').addEventListener('click', () => show(cur + 1));
+  $('[data-lb-prev]').addEventListener('click', () => show(cur - 1, true));
+  $('[data-lb-next]').addEventListener('click', () => show(cur + 1, true));
+  $('[data-lb-restart]').addEventListener('click', () => { show(0); $('[data-lb-next]').focus({ preventScroll: true }); });
   $('[data-lb-close]').addEventListener('click', () => lb.close());
   lb.addEventListener('click', (e) => { if (e.target === lb) lb.close(); });
-  lb.addEventListener('keydown', (e) => { if (e.key === 'ArrowLeft') show(cur - 1); else if (e.key === 'ArrowRight') show(cur + 1); });
+  lb.addEventListener('keydown', (e) => { if (e.key === 'ArrowLeft') show(cur - 1, true); else if (e.key === 'ArrowRight') show(cur + 1, true); });
   lb.addEventListener('close', () => { lastThumb && lastThumb.focus({ preventScroll: true }); });
 })();
