@@ -58,9 +58,9 @@ Na następne wydarzenie: podmień teksty/datę w `index.html` (sekcja `.event`, 
 **Ссылка «POBIERZ ZDJĘCIA»:** атрибут `data-download-href=""` у `<section class="gal">`. Пока пусто — кнопка в состоянии «wkrótce».
 **Фото следующего события:** замените 8 файлов в `assets/gallery-reveal/photos/` и `alt` в `index.html`.
 
-## Блок 3: билет / бронирование (`#bilety` на `/private/`)
+## Блок 3: ближайшее спотканя — кнопка «REZERWUJ MIEJSCE» (`#rezerwacja` на `/private/`)
 
-Фронтенд: секция `.tb` в `private-content/index.html`, `tickets.css`, `tickets.js` (все тексты и данные события — один объект `CONTENT` в начале `tickets.js`), ассеты `private-content/assets/tickets/` (фон `interior.jpg`, портрет `speaker.png`). Штор в этом блоке нет (убраны по запросу).
-Backend: `api/tickets.js` (`/api/tickets/{status,validate,checkout,reserve}`) → адаптер `api/_tickets.js`. **Сейчас это DEMO-адаптер:** нет оплаты, нет записи броней; QR-билет не выдаётся.
-Env (только сервер): `TICKET_DEMO_INVITES` (JSON с кодами, ценой, лимитом мест), `TICKET_SEATS_AVAILABLE`, `EVENT_MEMBER_TERMS`, `TICKET_MEMBER_MAX_SEATS`. Без `TICKET_DEMO_INVITES` любой код считается неверным.
-Чтобы подключить реальный бэкенд/оплату — замените `demoAdapter` в `api/_tickets.js` (интерфейс описан в начале файла); QR выдавать только после webhook оператора.
+Фронтенд: секция `.tb` и `<dialog class="rsv">` в `private-content/index.html`, `reservation.css`, `reservation.js` (данные события и тексты — объект `CONTENT` в начале `reservation.js`), ассеты `private-content/assets/tickets/` (фон `interior.jpg`, портрет `speaker.png`).
+Кнопка открывает окно: имя и фамилия, фирма (необязательно), телефон, e-mail, число мест (1–5), согласие RODO. Отправка: `POST /api/apply` с `type: "reservation"`; данные события дописывает сервер.
+Куда уходят заявки — те же переменные Vercel, что и у формы членства: `APPLICATION_WEBHOOK_URL` либо `RESEND_API_KEY` + `APPLICATIONS_TO`. Без них сервер отвечает 503 и ничего не сохраняет.
+Покупки билетов и оплаты в блоке нет (убрано по запросу).

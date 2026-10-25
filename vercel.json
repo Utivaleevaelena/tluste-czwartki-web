@@ -8,10 +8,6 @@
   },
   "rewrites": [
     {
-      "source": "/api/tickets/:action",
-      "destination": "/api/tickets?action=:action"
-    },
-    {
       "source": "/api/members/verify",
       "destination": "/api/verify"
     },

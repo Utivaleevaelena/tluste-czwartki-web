@@ -1,4 +1,5 @@
-// POST /api/apply — przyjmuje zgłoszenie do klubu i przekazuje je dalej.
+// POST /api/apply — przyjmuje zgłoszenia i przekazuje je dalej. Typy: „membership” (zgłoszenie do klubu, domyślny)
+// oraz „reservation” (rezerwacja miejsca na najbliższe spotkanie).
 // Dostawa (ustaw w Vercel → Environment Variables), wystarczy jedna z opcji:
 //   APPLICATION_WEBHOOK_URL            — dowolny webhook (Make, Zapier, n8n, własny CRM) dostaje JSON ze zgłoszeniem
 //   RESEND_API_KEY + APPLICATIONS_TO   — e-mail przez Resend (opcjonalnie APPLICATIONS_FROM)
@@ -8,34 +9,48 @@ const hits = new Map(); // best effort w pamięci instancji: 5 zgłoszeń / 10 m
 
 const clean = (v, max) => String(v ?? '').replace(/[\u0000-\u001f\u007f]/g, ' ').trim().slice(0, max);
 
+const EVENT = { title: 'Czas i zaangażowanie właściciela', date: '26.11.2026', speaker: 'Michał Borowski' }; // dane z content.json bloku wydarzenia
+const MAX_SEATS = 5;
+
 function validate(b) {
+  const reservation = b.type === 'reservation';
   const d = {
+    type: reservation ? 'reservation' : 'membership',
     name: clean(b.name, 120), company: clean(b.company, 160), turnover: clean(b.turnover, 60),
     phone: clean(b.phone, 40), email: clean(b.email, 160),
   };
   const digits = d.phone.replace(/\D/g, '');
   const errors = {};
   if (d.name.length < 3) errors.name = true;
-  if (d.company.length < 2) errors.company = true;
-  if (!d.turnover) errors.turnover = true;
+  if (!reservation && d.company.length < 2) errors.company = true;
+  if (!reservation && !d.turnover) errors.turnover = true;
   if (!/^\+?[\d\s().-]{7,}$/.test(d.phone) || digits.length < 7 || digits.length > 15) errors.phone = true;
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(d.email)) errors.email = true;
+  if (reservation) {
+    const seats = Number(b.seats);
+    if (!Number.isInteger(seats) || seats < 1 || seats > MAX_SEATS) errors.seats = true; else d.seats = seats;
+    d.event = EVENT;                                   // dane wydarzenia dopisuje serwer, nie przeglądarka
+  }
   if (b.consent !== true) errors.consent = true;
   return { d, errors };
 }
 
 async function deliver(d) {
-  const payload = { ...d, consent: true, consentText: 'RODO – zgoda na kontakt w sprawie członkostwa', receivedAt: new Date().toISOString(), source: 'tluste-czwartki-web' };
+  const reservation = d.type === 'reservation';
+  const payload = { ...d, consent: true, consentText: reservation ? 'RODO – zgoda na kontakt w sprawie rezerwacji miejsca' : 'RODO – zgoda na kontakt w sprawie członkostwa', receivedAt: new Date().toISOString(), source: 'tluste-czwartki-web' };
   if (process.env.APPLICATION_WEBHOOK_URL) {
     const r = await fetch(process.env.APPLICATION_WEBHOOK_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
     return r.ok;
   }
   if (process.env.RESEND_API_KEY && process.env.APPLICATIONS_TO) {
-    const text = `Nowe zgłoszenie do klubu\n\nImię i nazwisko: ${d.name}\nFirma: ${d.company}\nObrót: ${d.turnover}\nTelefon: ${d.phone}\nE-mail: ${d.email}\nZgoda RODO: tak\nData: ${payload.receivedAt}`;
+    const text = reservation
+      ? `Rezerwacja miejsca\n\nWydarzenie: ${EVENT.title} (${EVENT.date})\nImię i nazwisko: ${d.name}\nFirma: ${d.company || '—'}\nLiczba miejsc: ${d.seats}\nTelefon: ${d.phone}\nE-mail: ${d.email}\nZgoda RODO: tak\nData: ${payload.receivedAt}`
+      : `Nowe zgłoszenie do klubu\n\nImię i nazwisko: ${d.name}\nFirma: ${d.company}\nObrót: ${d.turnover}\nTelefon: ${d.phone}\nE-mail: ${d.email}\nZgoda RODO: tak\nData: ${payload.receivedAt}`;
+    const subject = reservation ? `Rezerwacja miejsca ${EVENT.date}: ${d.name} (${d.seats})` : `Zgłoszenie do klubu: ${d.name} (${d.company})`;
     const r = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ from: process.env.APPLICATIONS_FROM || 'Tłuste Czwartki <onboarding@resend.dev>', to: process.env.APPLICATIONS_TO.split(',').map((s) => s.trim()), reply_to: d.email, subject: `Zgłoszenie do klubu: ${d.name} (${d.company})`, text }),
+      body: JSON.stringify({ from: process.env.APPLICATIONS_FROM || 'Tłuste Czwartki <onboarding@resend.dev>', to: process.env.APPLICATIONS_TO.split(',').map((s) => s.trim()), reply_to: d.email, subject, text }),
     });
     return r.ok;
   }

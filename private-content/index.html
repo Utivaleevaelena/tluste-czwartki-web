@@ -11,7 +11,7 @@
   <link rel="preload" as="image" href="assets/events/marian-popinigis/speaker.png">
   <link rel="stylesheet" href="event.css">
   <link rel="stylesheet" href="gallery.css">
-  <link rel="stylesheet" href="tickets.css">
+  <link rel="stylesheet" href="reservation.css">
 </head>
 <body>
 
@@ -180,11 +180,11 @@
 
 
 <!--
-  Blok 3: najbliższe spotkanie — bilet / rezerwacja.
-  Wszystkie teksty i dane wydarzenia są w jednym obiekcie CONTENT na początku tickets.js (atrybuty data-t).
-  Backend: /api/tickets/* → api/tickets.js → adapter w api/_tickets.js (DEMO, bez płatności).
+  Blok 3: najbliższe spotkanie — przycisk REZERWUJ MIEJSCE otwiera okno z formularzem rezerwacji.
+  Dane wydarzenia (data, temat, prelegent, miejsce) są w obiekcie CONTENT na początku reservation.js (atrybuty data-t).
+  Zgłoszenia: POST /api/apply (type: "reservation") → webhook lub e-mail ustawiony w zmiennych środowiskowych (patrz README).
 -->
-<section class="tb" id="bilety" data-tb aria-labelledby="tb-title">
+<section class="tb" id="rezerwacja" data-tb aria-labelledby="tb-title">
   <div class="tb__bg" aria-hidden="true"></div>
   <div class="tb__shade" aria-hidden="true"></div>
 
@@ -199,65 +199,80 @@
         <p class="tb__name" data-t="event.speaker"></p>
         <p class="tb__role" data-t="event.speakerRole"></p>
       </div>
-      <address class="tb__venue tb__rise" style="--r:4">
+      <div class="tb__actions tb__rise" style="--r:4">
+        <button class="tb__cta" type="button" aria-haspopup="dialog" aria-controls="rsv-dialog" data-reserve>
+          <span data-t="cta"></span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M14 7l5 5-5 5"/></svg>
+        </button>
+      </div>
+      <address class="tb__venue tb__rise" style="--r:5">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 5.2-8 11-8 11S4 15.2 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>
         <span data-t="event.venue"></span><i aria-hidden="true"></i><span data-t="event.location"></span>
       </address>
     </div>
-
-    <div class="tb__panel tb__slide" data-panel-wrap>
-      <h3 class="tb__heading"><span data-t="booking.heading"></span></h3>
-
-      <div class="tb__tabs" role="tablist" aria-label="Sposób rezerwacji" data-tabs>
-        <span class="tb__tab-thumb" aria-hidden="true"></span>
-        <button class="tb__tab" type="button" role="tab" id="tab-member" aria-selected="false" aria-controls="tb-form" tabindex="-1" data-mode="member"><span data-t="booking.modes.member"></span></button>
-        <button class="tb__tab" type="button" role="tab" id="tab-guest" aria-selected="true" aria-controls="tb-form" data-mode="guest"><span data-t="booking.modes.guest"></span></button>
-      </div>
-
-      <form class="tb__form" id="tb-form" role="tabpanel" aria-labelledby="tab-guest" novalidate data-form>
-        <!-- Gość z zaproszeniem -->
-        <div class="tb__field" data-guest-only>
-          <label for="tb-code" data-t="booking.inviteCodeLabel"></label>
-          <input id="tb-code" name="code" type="text" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="64"
-                 aria-describedby="tb-msg" data-code>
-        </div>
-
-        <!-- Członek klubu -->
-        <div class="tb__member" data-member-only hidden>
-          <p class="tb__member-line" data-member-avail></p>
-          <p class="tb__member-terms" data-member-terms hidden></p>
-        </div>
-
-        <div class="tb__qty-row">
-          <span class="tb__qty-label" id="tb-qty-label" data-t="booking.quantityLabel"></span>
-          <div class="tb__qty" role="group" aria-labelledby="tb-qty-label">
-            <button class="tb__qty-btn" type="button" aria-label="Zmniejsz liczbę miejsc" data-minus>−</button>
-            <output class="tb__qty-val" aria-live="polite" data-qty>1</output>
-            <button class="tb__qty-btn" type="button" aria-label="Zwiększ liczbę miejsc" data-plus>+</button>
-          </div>
-        </div>
-
-        <p class="tb__price" data-price hidden></p>
-
-        <button class="tb__cta" type="submit" disabled data-cta>
-          <span data-cta-label></span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M14 7l5 5-5 5"/></svg>
-        </button>
-
-        <div class="tb__status" id="tb-msg" role="status" aria-live="polite" data-msg></div>
-
-        <button class="tb__switch" type="button" data-switch>
-          <span data-switch-label></span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M14 7l5 5-5 5"/></svg>
-        </button>
-        <p class="tb__note" data-t="booking.confirmationCopy"></p>
-      </form>
-    </div>
   </div>
 </section>
 
+<!-- Okno rezerwacji -->
+<dialog class="rsv" id="rsv-dialog" aria-labelledby="rsv-title" data-rsv>
+  <form class="rsv__form" method="post" novalidate data-rsv-form>
+    <button class="rsv__close" type="button" aria-label="Zamknij formularz" data-rsv-close>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+    <p class="rsv__eyebrow"><span data-t="eyebrow"></span> · <span data-t="event.displayDate"></span></p>
+    <h2 class="rsv__title" id="rsv-title" data-t="dialog.title"></h2>
+    <p class="rsv__lead"><span data-t="event.title"></span></p>
+
+    <div class="rsv__fields" data-rsv-fields>
+      <div class="rsv__field">
+        <label for="rv-name" data-t="dialog.name"></label>
+        <input id="rv-name" name="name" type="text" autocomplete="name" maxlength="120" required>
+        <span class="rsv__err" id="rv-name-err" hidden data-t="dialog.errName"></span>
+      </div>
+      <div class="rsv__field">
+        <label for="rv-company"><span data-t="dialog.company"></span> <em data-t="dialog.optional"></em></label>
+        <input id="rv-company" name="company" type="text" autocomplete="organization" maxlength="160">
+      </div>
+      <div class="rsv__row">
+        <div class="rsv__field">
+          <label for="rv-phone" data-t="dialog.phone"></label>
+          <input id="rv-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="40" required>
+          <span class="rsv__err" id="rv-phone-err" hidden data-t="dialog.errPhone"></span>
+        </div>
+        <div class="rsv__field">
+          <label for="rv-email" data-t="dialog.email"></label>
+          <input id="rv-email" name="email" type="email" inputmode="email" autocomplete="email" maxlength="160" required>
+          <span class="rsv__err" id="rv-email-err" hidden data-t="dialog.errEmail"></span>
+        </div>
+      </div>
+
+      <div class="rsv__qty-row">
+        <span class="rsv__qty-label" id="rv-seats-label" data-t="dialog.seats"></span>
+        <div class="rsv__qty" role="group" aria-labelledby="rv-seats-label">
+          <button class="rsv__qty-btn" type="button" aria-label="Zmniejsz liczbę miejsc" data-minus>−</button>
+          <output class="rsv__qty-val" aria-live="polite" data-seats>1</output>
+          <button class="rsv__qty-btn" type="button" aria-label="Zwiększ liczbę miejsc" data-plus>+</button>
+        </div>
+      </div>
+
+      <div class="rsv__hp" aria-hidden="true"><label>Nie wypełniaj tego pola<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+
+      <div class="rsv__consent">
+        <input id="rv-consent" name="consent" type="checkbox" required>
+        <label for="rv-consent" data-t="dialog.consent"></label>
+        <span class="rsv__err" id="rv-consent-err" hidden data-t="dialog.errConsent"></span>
+      </div>
+
+      <button class="rsv__submit" type="submit" data-rsv-submit data-t="dialog.submit"></button>
+    </div>
+
+    <p class="rsv__status" role="status" aria-live="polite" data-rsv-status></p>
+    <p class="rsv__status rsv__status--error" role="alert" data-rsv-error></p>
+  </form>
+</dialog>
+
 <script src="/dzwiek.js" defer></script>
 <script src="gallery.js" defer></script>
-<script src="tickets.js" defer></script>
+<script src="reservation.js" defer></script>
 </body>
 </html>
