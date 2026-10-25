@@ -30,3 +30,10 @@ Nie umieszczaj tam nic w `public/` — ten folder jest publiczny.
 - Limit prób (5 / min na IP) działa w pamięci instancji — na produkcji dodaj Vercel Firewall lub KV rate limit.
 - Jeden wspólny kod to rozwiązanie na MVP; docelowo zaproszenia lub konta osobiste.
 - Duże pliki prywatne (zdjęcia, wideo) powinny iść przez podpisane URL-e, nie przez funkcję.
+
+## Blok 2 — zaproszenie do klubu (`#zaproszenie`)
+
+`public/zaproszenie.css` + `public/zaproszenie.js` + `public/assets/invitation/`. Ręka z kartą wjeżdża z prawej przy scrollu (jeden kontener),
+przycisk DOŁĄCZ to prawdziwy `<button>` z PNG default/pressed. Tekst karty to żywy HTML.
+Kliknięcie emituje `window` event `club:join-request` i wywołuje opcjonalne `STREFA_CONFIG.onJoinRequest()` — podłącz tu formularz zgłoszeń
+(adres nie jest jeszcze zatwierdzony). Link „POPROŚ O ZAPROSZENIE →” z bloku 1 przewija do tej sceny.

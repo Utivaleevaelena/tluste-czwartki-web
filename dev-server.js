@@ -39,5 +39,6 @@ http.createServer((req, res) => {
   const file = path.normalize(path.join(PUBLIC, rel));
   if (!file.startsWith(PUBLIC + path.sep) || !fs.existsSync(file) || !fs.statSync(file).isFile()) { res.statusCode = 404; return res.end('Not found'); }
   res.setHeader('Content-Type', TYPES[path.extname(file)] || 'application/octet-stream');
+  res.setHeader('Cache-Control', 'no-cache');
   fs.createReadStream(file).pipe(res);
 }).listen(8765, '127.0.0.1', () => console.log('http://127.0.0.1:8765/index.html'));

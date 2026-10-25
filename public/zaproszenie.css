@@ -1,0 +1,89 @@
+/* Blok 2 — zaproszenie do klubu */
+.inv {
+  position: relative; height: 220svh; background: #1b0101;
+  --jw: clamp(220px, 20vw, 360px);                 /* widoczna szerokość przycisku */
+  --cw: min(39vw, 102svh);                          /* szerokość karty */
+  --ca: 652 / 395;                                  /* proporcje karty */
+  --cx: calc(44.2vw - var(--cw) / 2);               /* lewy brzeg karty (jak w referencji) */
+  --cy: 21.8svh;
+  --tx: 70vw;                                       /* start: poza prawą krawędzią */
+}
+.inv__stage { position: sticky; top: 0; height: 100svh; overflow: clip; isolation: isolate; background: #1b0101; }
+.inv__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; user-select: none; }
+.inv::after { /* delikatna winieta dla czytelności */
+  content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 0;
+}
+
+/* Przycisk DOŁĄCZ — prawdziwy <button>, PNG tylko jako oprawa. Widoczna sztabka = ~84.5% × 70% płótna. */
+.inv__join {
+  position: absolute; z-index: 3; left: 50%; translate: -50% 0; bottom: clamp(34px, 7svh, 76px);
+  width: var(--jw); aspect-ratio: 1690 / 540; padding: 0; margin: 0; border: 0; background: transparent; cursor: pointer;
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation; user-select: none;
+}
+.inv__join::after { content: ""; position: absolute; inset: -6px; } /* strefa dotyku */
+.inv__join-img {
+  position: absolute; left: 50%; top: 50%; translate: -50% -50%; width: calc(var(--jw) / .845); max-width: none; height: auto;
+  pointer-events: none; user-select: none; -webkit-user-drag: none; transition: filter 160ms ease;
+}
+.inv__join-img--pressed { visibility: hidden; }
+.inv__join.is-pressed .inv__join-img--default { visibility: hidden; }
+.inv__join.is-pressed .inv__join-img--pressed { visibility: visible; }
+.inv__join:hover .inv__join-img { filter: drop-shadow(0 0 14px rgb(251 213 125 / .38)); }
+.inv__join:focus-visible { outline: 2px solid #fbd57d; outline-offset: 6px; border-radius: 6px; }
+
+/* Karta + ręka: jeden obiekt, jedna animacja */
+.inv__group {
+  position: absolute; z-index: 2; left: var(--cx); top: var(--cy); width: var(--cw);
+  transform: translate3d(var(--tx), 4svh, 0) rotate(2.5deg); transform-origin: 30% 60%; will-change: transform;
+}
+.inv__card { position: relative; width: 100%; aspect-ratio: var(--ca); container-type: inline-size; margin: 0; }
+/* widoczna karta w PNG zajmuje x 190–1465, y 128–835 z 1672×941 → rozciągamy ją dokładnie na pudełko */
+.inv__card-img { position: absolute; left: -14.9%; top: -18.1%; width: 131.1%; height: 133.1%; max-width: none; user-select: none; pointer-events: none; }
+
+.inv__copy {
+  position: absolute; inset: 0; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 6.5cqw 11cqw 6cqw 6.5cqw; /* palec dociska prawy górny róg — tekst lekko w lewo */ text-align: center; color: var(--ink, #29150d);
+}
+.inv__eyebrow {
+  margin: 0 0 4.2cqw; font: 600 1.75cqw / 1.35 "Cormorant Garamond", Georgia, serif;
+  letter-spacing: .17em; text-transform: uppercase; color: #5a1d1d; text-wrap: balance;
+}
+.inv__title {
+  margin: 0 0 4cqw; font: 700 7cqw / 1 "Bodoni Moda", "Playfair Display", Georgia, serif;
+  letter-spacing: -.012em; color: #4a0d12; white-space: nowrap;
+}
+.inv__body { margin: 0; font: 500 2.4cqw / 1.42 "Cormorant Garamond", Georgia, serif; color: #3a1d14; text-wrap: balance; }
+.inv__rule { display: block; width: 7.5cqw; height: 1px; margin: 3.4cqw 0; background: #6a0505; opacity: .8; }
+.inv__criteria {
+  margin: 0; font: 600 1.7cqw / 1.4 "Cormorant Garamond", Georgia, serif; letter-spacing: .15em; color: #5a1d1d; text-wrap: balance;
+}
+
+/* Ręka: 1672×941 → skala .7 względem referencji, kciuk dociska prawy górny róg karty */
+.inv__hand {
+  position: absolute; z-index: 2; left: 33.3cqw; top: -23cqw; width: 179.4cqw; height: auto; max-width: none;
+  pointer-events: none; user-select: none; -webkit-user-drag: none; filter: drop-shadow(0 1.2cqw 1.6cqw rgb(0 0 0 / .45));
+}
+
+/* Tablet */
+@media (max-width: 1023px) {
+  .inv { height: 190svh; --cw: 62vw; --cx: 12vw; --cy: 18svh; --jw: clamp(220px, 32vw, 320px); }
+  .inv__eyebrow { font-size: 2cqw; } .inv__body { font-size: 2.7cqw; } .inv__criteria { font-size: 1.95cqw; }
+}
+
+/* Telefon: karta ~76vw, kwadratowa, ręka wchodzi z prawej (widać kciuk i pierścień) */
+@media (max-width: 767px) {
+  .inv { height: 175svh; --cw: 76vw; --ca: 1 / 1.02; --cx: 4vw; --cy: 10svh; --jw: clamp(210px, 62vw, 280px); }
+  .inv__copy { padding: 8cqw 11cqw 7cqw; }
+  .inv__eyebrow { font-size: 3.1cqw; margin-bottom: 4cqw; letter-spacing: .12em; }
+  .inv__title { font-size: 7.4cqw; margin-bottom: 4cqw; }
+  .inv__body { font-size: 4.5cqw; line-height: 1.32; }
+  .inv__rule { width: 12cqw; margin: 4cqw 0; }
+  .inv__criteria { font-size: 3cqw; letter-spacing: .1em; }
+}
+
+/* Reduced motion: kompozycja od razu w końcowym stanie, bez długiej sekcji sticky */
+@media (prefers-reduced-motion: reduce) {
+  .inv { height: 100svh; }
+  .inv__group { transform: none !important; will-change: auto; }
+  .inv__join-img { transition: none; }
+}

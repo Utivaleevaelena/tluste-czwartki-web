@@ -7,9 +7,10 @@
   <meta name="description" content="Strefa Klubowicza — wejście dla członków klubu Tłuste Czwartki.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Montserrat:wght@500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Montserrat:wght@500&family=Bodoni+Moda:opsz,wght@6..96,700&display=swap" rel="stylesheet">
   <link rel="preload" as="image" href="assets/curtain-closed.png">
   <link rel="stylesheet" href="strefa.css">
+  <link rel="stylesheet" href="zaproszenie.css">
   <script>
     /* Konfiguracja bloku. Prawidłowy kod NIE jest tu przechowywany — weryfikuje go wyłącznie serwer. */
     window.STREFA_CONFIG = {
@@ -139,8 +140,33 @@
   </div>
 </section>
 
-<div class="after" aria-hidden="true"></div>
+<!-- Blok 2: zaproszenie do klubu — ręka w rękawiczce podaje kartę, przycisk DOŁĄCZ -->
+<section class="inv" id="zaproszenie" data-inv aria-labelledby="club-invitation-title">
+  <div class="inv__stage" data-inv-stage>
+    <img class="inv__bg" src="assets/invitation/background.jpg" alt="" aria-hidden="true" width="1672" height="941" decoding="async" fetchpriority="low">
+
+    <button class="inv__join" type="button" aria-label="Dołącz do klubu" data-join>
+      <img class="inv__join-img inv__join-img--default" src="assets/invitation/join-default.png" alt="" aria-hidden="true" draggable="false" width="900" height="346">
+      <img class="inv__join-img inv__join-img--pressed" src="assets/invitation/join-pressed.png" alt="" aria-hidden="true" draggable="false" width="900" height="346">
+    </button>
+
+    <div class="inv__group" data-inv-group>
+      <article class="inv__card">
+        <img class="inv__card-img" src="assets/invitation/card.png" alt="" aria-hidden="true" width="1672" height="941" decoding="async" fetchpriority="low">
+        <div class="inv__copy">
+          <p class="inv__eyebrow">TŁUSTE CZWARTKI · KLUB WŁAŚCICIELI FIRM</p>
+          <h2 class="inv__title" id="club-invitation-title">RAZ W MIESIĄCU.<br>BEZ FILTRÓW.</h2>
+          <p class="inv__body">Zamknięte spotkania z przedsiębiorcami, którzy mówią o decyzjach, błędach i kulisach biznesu.<br>Ty pytasz — i zabierasz konkretną wartość.</p>
+          <span class="inv__rule" aria-hidden="true"></span>
+          <p class="inv__criteria">TYLKO DLA CZŁONKÓW SPEŁNIAJĄCYCH KRYTERIA KLUBU</p>
+        </div>
+        <img class="inv__hand" src="assets/invitation/hand.png" alt="" aria-hidden="true" width="1672" height="941" decoding="async" fetchpriority="low">
+      </article>
+    </div>
+  </div>
+</section>
 
 <script src="strefa.js" defer></script>
+<script src="zaproszenie.js" defer></script>
 </body>
 </html>
