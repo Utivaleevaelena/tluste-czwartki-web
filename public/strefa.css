@@ -136,11 +136,13 @@ body { margin: 0; background: #0d0505; color: var(--club-ivory); }
   left: 53.4%; top: 53%; width: 17.4%; height: auto; translate: -50% -50%;
   will-change: transform;
 }
+/* oko zamyka się płynnie po najechaniu kursorem na portret */
+.portrait.is-closed .scene__lid { opacity: 1; }
 .scene__lid {
   left: -5%; top: -6.5%; width: 116.5%; height: auto; opacity: 0;
   -webkit-mask-image: radial-gradient(ellipse 50% 49% at 50% 55%, #000 62%, transparent 98%);
           mask-image: radial-gradient(ellipse 50% 49% at 50% 55%, #000 62%, transparent 98%);
-  will-change: opacity;
+  transition: opacity 150ms ease-out; will-change: opacity;
 }
 
 /* ── Podpis i status ───────────────────────────────────────── */

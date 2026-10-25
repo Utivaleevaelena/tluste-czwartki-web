@@ -92,7 +92,7 @@
   let firstBlinkDone = false, blinkTimer = 0, lidHeld = false;
 
   function blink(duration = 260) {
-    if (reduced || lidHeld) return;
+    if (reduced || lidHeld || el.portrait.classList.contains('is-closed')) return;
     el.lid.animate(
       [{ opacity: 0 }, { opacity: 1, offset: .32 }, { opacity: 1, offset: .5 }, { opacity: 0 }],
       { duration, easing: 'ease-in-out' }
@@ -115,6 +115,13 @@
     lidHeld = false;
     el.lid.getAnimations().forEach((a) => a.cancel());
   }
+
+  /* Najechanie myszą na portret zamyka oko (tylko myszka/rysik, gdy scena jest odsłonięta). */
+  el.portrait.addEventListener('pointerenter', (e) => {
+    if (e.pointerType === 'touch' || reduced || !live) return;
+    el.portrait.classList.add('is-closed');
+  });
+  el.portrait.addEventListener('pointerleave', () => el.portrait.classList.remove('is-closed'));
 
   /* ── Śledzenie wzroku (jedna pętla rAF) ────────────────────── */
   const MAX_X = 7, MAX_Y = 4;
