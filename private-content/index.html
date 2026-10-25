@@ -4,17 +4,66 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
-  <title>Strefa Klubowicza — wnętrze</title>
-  <style>
-    html, body { height: 100%; margin: 0; background: #1a0707; color: #f3e2c8; }
-    body { display: grid; place-items: center; text-align: center; font: 500 14px/1.6 "Montserrat", Arial, sans-serif; letter-spacing: .22em; text-transform: uppercase; }
-    h1 { font: 500 clamp(22px, 3vw, 40px) / 1.2 "Cormorant Garamond", Georgia, serif; letter-spacing: .3em; margin: 0 0 16px; }
-  </style>
+  <title>Relacja ze spotkania — Tłuste Czwartki</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,700;6..96,800&family=Manrope:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="preload" as="image" href="assets/events/marian-popinigis/speaker.png">
+  <link rel="stylesheet" href="event.css">
 </head>
 <body>
-  <main>
-    <h1>WITAJ W KLUBIE.</h1>
-    <p>Prywatna część serwisu — w przygotowaniu.</p>
-  </main>
+
+<!--
+  Blok „relacja ze spotkania” (wielokrotnego użytku).
+  Na następne wydarzenie zmień: teksty i datę poniżej, adresy w .event__cta (href),
+  oraz dwa obrazy w assets/events/<nazwa>/ (background.jpg, speaker.png — PNG z przezroczystością).
+-->
+<section class="event" aria-labelledby="event-title">
+  <img class="event__bg" src="assets/events/marian-popinigis/background.jpg" alt="" aria-hidden="true" width="1672" height="941" decoding="async" fetchpriority="high">
+  <div class="event__shade" aria-hidden="true"></div>
+
+  <div class="event__inner">
+    <div class="event__content">
+      <p class="event__eyebrow"><span>RELACJA ZE SPOTKANIA</span></p>
+
+      <h2 class="event__title" id="event-title">
+        <span>JAK ZOSTAĆ</span>
+        <span class="event__accent">INWESTOREM</span>
+        <span>WE WŁASNEJ FIRMIE?</span>
+      </h2>
+
+      <div class="event__speaker">
+        <p class="event__label">ROZMOWA Z GOŚCIEM</p>
+        <p class="event__name">MARIAN POPINIGIS</p>
+      </div>
+
+      <div class="event__meta">
+        <p class="event__meta-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 17.5h.01M12 17.5h.01" stroke-width="2.2"/></svg>
+          <time datetime="2026-10-22T18:18:00+02:00">22.10.2026</time><i class="event__dot" aria-hidden="true"></i><span>18:18</span>
+        </p>
+        <address class="event__meta-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 5.2-8 11-8 11S4 15.2 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+          <span>TŁUSTA KACZKA</span><i class="event__dot" aria-hidden="true"></i><span>GDYNIA ORŁOWO</span>
+        </address>
+      </div>
+
+      <div class="event__actions">
+        <!-- adresy do uzupełnienia po zatwierdzeniu: eventHref / membersHref -->
+        <a class="event__cta event__cta--primary" href="#relacja">
+          <span>ZOBACZ RELACJĘ</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M14 7l5 5-5 5"/></svg>
+        </a>
+        <a class="event__cta event__cta--link" href="#materialy">
+          <span>MATERIAŁY DLA KLUBOWICZÓW</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M14 7l5 5-5 5"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <img class="event__portrait" src="assets/events/marian-popinigis/speaker.png" alt="" aria-hidden="true" width="1024" height="1536" decoding="async">
+  </div>
+</section>
+
 </body>
 </html>

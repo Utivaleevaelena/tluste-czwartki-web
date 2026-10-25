@@ -1,0 +1,140 @@
+/* Blok „relacja ze spotkania” — tokeny w :root, wszystko edytowalne */
+:root {
+  --event-bg: #050403;
+  --event-bg-warm: #1a0b07;
+  --event-text: #f6f1e8;
+  --event-text-muted: #cfc6b9;
+  --event-gold: #d7aa70;
+  --event-gold-soft: #b98b53;
+  --event-red: #b30914;
+  --event-red-hover: #cf101c;
+  --event-red-active: #920710;
+  --event-focus: #f1c98e;
+  --event-max-width: 1600px;
+  --event-page-gutter: clamp(24px, 4.5vw, 78px);
+  --event-serif: "Bodoni Moda", "Times New Roman", serif;
+  --event-sans: "Manrope", "Helvetica Neue", Arial, sans-serif;
+  --ease: cubic-bezier(.22, 1, .36, 1);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; background: var(--event-bg); color: var(--event-text); }
+
+.event {
+  position: relative; isolation: isolate; overflow: hidden; width: 100%;
+  min-height: clamp(700px, 56.25vw, 940px);
+  background: linear-gradient(90deg, var(--event-bg), var(--event-bg-warm));
+  display: flex; align-items: stretch;
+}
+.event__bg { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; }
+.event__shade {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(90deg, rgb(5 4 3 / .98) 0%, rgb(5 4 3 / .93) 30%, rgb(5 4 3 / .58) 52%, rgb(5 4 3 / .12) 74%, rgb(5 4 3 / 0) 100%);
+}
+.event__inner {
+  position: relative; z-index: 2; width: 100%; max-width: var(--event-max-width); margin-inline: auto;
+  padding-inline: var(--event-page-gutter); display: grid; grid-template-columns: minmax(0, 58%) minmax(0, 42%); align-items: stretch;
+}
+
+/* ── Treść (lewa kolumna) ─────────────────────────────── */
+.event__content {
+  position: relative; z-index: 3; align-self: center; padding-block: clamp(48px, 7vw, 110px);
+  animation: event-rise 800ms var(--ease) both;
+}
+.event__eyebrow {
+  display: flex; align-items: center; gap: clamp(14px, 1.6vw, 26px); margin: 0 0 clamp(26px, 3.4vw, 56px);
+  font: 600 clamp(11px, .95vw, 16px) / 1 var(--event-sans); letter-spacing: .34em; color: var(--event-gold); text-transform: uppercase;
+}
+.event__eyebrow::before, .event__eyebrow::after { content: ""; flex: 1 1 0; height: 1px; background: var(--event-gold-soft); opacity: .8; }
+.event__eyebrow::before { max-width: 8vw; }
+.event__eyebrow span { white-space: nowrap; }
+
+.event__title {
+  margin: 0; display: grid; justify-items: start; font: 800 clamp(48px, 6.2vw, 106px) / .9 var(--event-serif);
+  letter-spacing: -.012em; color: var(--event-text); text-wrap: balance;
+}
+.event__title span { display: block; white-space: nowrap; font-size: .74em; line-height: 1.02; }
+.event__title .event__accent {
+  font-size: 1em; line-height: .96;
+  background: linear-gradient(180deg, #f3d6a2 0%, #d7aa70 55%, #b98b53 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent;
+}
+
+.event__speaker { margin-top: clamp(30px, 3.6vw, 62px); }
+.event__label {
+  display: flex; align-items: center; gap: clamp(14px, 1.6vw, 26px); margin: 0 0 clamp(8px, .9vw, 14px);
+  font: 600 clamp(11px, .95vw, 16px) / 1 var(--event-sans); letter-spacing: .34em; color: var(--event-gold); text-transform: uppercase;
+}
+.event__label::after { content: ""; flex: 0 1 clamp(120px, 18vw, 320px); height: 1px; background: var(--event-gold-soft); opacity: .8; }
+.event__name { margin: 0; font: 700 clamp(22px, 2vw, 34px) / 1.1 var(--event-serif); letter-spacing: .07em; color: var(--event-text); }
+
+.event__meta { margin-top: clamp(26px, 3.2vw, 54px); display: grid; gap: clamp(10px, 1.1vw, 18px); }
+.event__meta-row {
+  display: flex; align-items: center; flex-wrap: wrap; margin: 0; font: 500 clamp(13px, 1.3vw, 22px) / 1.2 var(--event-sans);
+  font-style: normal; letter-spacing: .14em; color: var(--event-text); text-transform: uppercase;
+}
+.event__meta-row svg { width: clamp(22px, 2.1vw, 34px); height: auto; margin-right: clamp(14px, 1.6vw, 26px); color: var(--event-gold); flex: none; }
+.event__dot { display: inline-block; width: 5px; height: 5px; margin-inline: clamp(12px, 1.3vw, 20px); border-radius: 50%; background: var(--event-gold); }
+
+.event__actions { margin-top: clamp(30px, 3.6vw, 62px); display: flex; align-items: center; flex-wrap: wrap; gap: clamp(20px, 2.8vw, 46px); }
+.event__cta { display: inline-flex; align-items: center; text-decoration: none; font-family: var(--event-sans); text-transform: uppercase; }
+.event__cta svg { flex: none; transition: transform 220ms var(--ease); }
+.event__cta:hover svg { transform: translateX(5px); }
+.event__cta:focus-visible { outline: 2px solid var(--event-focus); outline-offset: 4px; }
+
+.event__cta--primary {
+  min-height: 52px; padding: 0 clamp(20px, 2.2vw, 36px); gap: clamp(26px, 3vw, 54px); justify-content: space-between;
+  font-weight: 700; font-size: clamp(12px, 1vw, 16px); letter-spacing: .2em; color: var(--event-text);
+  background: var(--event-red); border: 1px solid rgb(241 201 142 / .55); border-radius: 2px;
+  box-shadow: 0 0 24px rgb(179 9 20 / .25); transition: background 180ms ease, transform 120ms ease;
+}
+.event__cta--primary svg { width: 26px; height: 26px; }
+.event__cta--primary:hover { background: var(--event-red-hover); }
+.event__cta--primary:active { background: var(--event-red-active); transform: translateY(1px); }
+
+.event__cta--link {
+  position: relative; min-height: 44px; gap: 14px; padding-bottom: 8px; font-weight: 600; font-size: clamp(11px, .88vw, 14px); letter-spacing: .14em; color: var(--event-text);
+}
+.event__cta--link svg { width: 22px; height: 22px; }
+.event__cta--link::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--event-gold); transform-origin: left; transition: transform 320ms var(--ease), background 200ms ease;
+}
+.event__cta--link:hover::after { background: #f1c98e; transform: scaleX(1.0); }
+.event__cta--link:hover { color: #fff; }
+
+/* ── Portret (prawa kolumna) ──────────────────────────── */
+.event__portrait {
+  position: absolute; z-index: 2; right: calc(var(--event-page-gutter) * -1); bottom: 0; height: min(100%, 940px); width: 52%; max-width: none;
+  object-fit: contain; object-position: right bottom; pointer-events: none; user-select: none;
+  filter: drop-shadow(0 0 40px rgb(0 0 0 / .35)); animation: event-slide 850ms var(--ease) 120ms both;
+}
+
+@keyframes event-rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+@keyframes event-slide { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: none; } }
+
+/* ── ≤ 900px: mniejszy portret, bardziej w prawo ───────── */
+@media (max-width: 900px) {
+  .event__inner { grid-template-columns: minmax(0, 62%) minmax(0, 38%); }
+  .event__portrait { width: 56%; right: calc(var(--event-page-gutter) * -1.4); }
+  .event__shade { background: linear-gradient(90deg, rgb(5 4 3 / .98) 0%, rgb(5 4 3 / .9) 40%, rgb(5 4 3 / .5) 66%, rgb(5 4 3 / .1) 100%); }
+}
+
+/* ── ≤ 720px: jedna kolumna — tekst, potem portret ─────── */
+@media (max-width: 720px) {
+  .event { min-height: 0; display: block; }
+  .event__inner { display: flex; flex-direction: column; padding-inline: 22px; }
+  .event__content { align-self: stretch; width: 100%; min-width: 0; padding-block: 44px 16px; }
+  .event__title span { white-space: normal; }
+  .event__eyebrow { letter-spacing: .26em; margin-bottom: 26px; }
+  .event__eyebrow::before { max-width: 22px; }
+  .event__title { font-size: clamp(40px, 12.5vw, 72px); }
+  .event__actions { flex-direction: column; align-items: stretch; gap: 22px; }
+  .event__cta--primary { justify-content: space-between; min-height: 56px; }
+  .event__cta--link { align-self: flex-start; }
+  .event__portrait { position: relative; right: auto; bottom: auto; width: min(100%, 520px); height: auto; margin: 8px -22px 0 auto; align-self: flex-end; }
+  .event__shade { background: linear-gradient(180deg, rgb(5 4 3 / .96) 0%, rgb(5 4 3 / .88) 55%, rgb(5 4 3 / .35) 100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .event__content, .event__portrait { animation: none; }
+  .event__cta svg, .event__cta--primary, .event__cta--link::after { transition: none; }
+}

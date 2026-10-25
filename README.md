@@ -45,3 +45,8 @@ Walidacja po stronie przeglądarki i serwera, pole-pułapka dla botów, limit 5 
 Dokąd trafiają zgłoszenia — zmienne środowiskowe Vercel (jedna z opcji):
 `APPLICATION_WEBHOOK_URL` (webhook JSON: Make/Zapier/n8n/CRM) albo `RESEND_API_KEY` + `APPLICATIONS_TO` (e-mail).
 Bez nich endpoint odpowiada 503 i nic nie zapisuje (formularz pokaże błąd).
+
+## Prywatna część: blok „relacja ze spotkania” (`/private/`)
+
+`private-content/index.html` + `event.css` + `assets/events/<wydarzenie>/{background.jpg,speaker.png}`. Pliki są serwowane przez `api/private.js` tylko z ważną sesją.
+Na następne wydarzenie: podmień teksty/datę w `index.html` (sekcja `.event`, komentarz na górze), adresy `href` przycisków (`#relacja`, `#materialy` — tymczasowe) i oba obrazy.
