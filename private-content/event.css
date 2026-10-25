@@ -141,3 +141,10 @@ html { scroll-behavior: smooth; }
 .sound-toggle:hover { background: rgb(60 6 2 / .75); border-color: #fbd57d; }
 .sound-toggle[aria-pressed="true"] { color: #fbd57d; border-color: #fbd57d; }
 .sound-toggle:focus-visible { outline: 2px solid #fbd57d; outline-offset: 3px; }
+
+/* ── Logo na pierwszym ekranie ─────────────────────── */
+.event__logo { position: absolute; z-index: 4; top: clamp(18px, 2.6vw, 40px); left: var(--event-page-gutter); display: block; width: clamp(140px, 14vw, 260px); aspect-ratio: 1928 / 815; text-decoration: none; }
+.event__logo span { position: absolute; inset: 0; background: #fcf4e6; -webkit-mask: url("assets/logo.png") center / contain no-repeat; mask: url("assets/logo.png") center / contain no-repeat; filter: drop-shadow(0 2px 14px rgb(0 0 0 / .6)); }
+.event__logo:focus-visible { outline: 2px solid var(--event-focus); outline-offset: 6px; }
+@media (min-width: 721px) { .event__content { padding-top: clamp(100px, 11vw, 190px); } }
+@media (max-width: 720px) { .event__logo { left: 22px; top: 18px; width: 118px; } .event__content { padding-top: 92px; } }
