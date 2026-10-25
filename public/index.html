@@ -11,6 +11,7 @@
   <link rel="preload" as="image" href="assets/curtain-closed.png">
   <link rel="stylesheet" href="strefa.css">
   <link rel="stylesheet" href="zaproszenie.css">
+  <link rel="stylesheet" href="zgloszenie.css">
   <script>
     /* Konfiguracja bloku. Prawidłowy kod NIE jest tu przechowywany — weryfikuje go wyłącznie serwer. */
     window.STREFA_CONFIG = {
@@ -166,7 +167,69 @@
   </div>
 </section>
 
+<!-- Formularz zgłoszenia do klubu (otwiera go przycisk DOŁĄCZ) -->
+<dialog class="apply" id="zgloszenie" data-apply aria-labelledby="apply-title">
+  <form class="apply__form" method="post" novalidate data-apply-form>
+    <button class="apply__close" type="button" aria-label="Zamknij formularz" data-apply-close>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+    <p class="apply__eyebrow">TŁUSTE CZWARTKI · KLUB WŁAŚCICIELI FIRM</p>
+    <h2 class="apply__title" id="apply-title">ZGŁOSZENIE DO KLUBU</h2>
+    <p class="apply__lead">Zostaw dane — odezwiemy się po weryfikacji zgłoszenia.</p>
+
+    <div class="apply__fields" data-apply-fields>
+      <div class="apply__field">
+        <label for="ap-name">Imię i nazwisko</label>
+        <input id="ap-name" name="name" type="text" autocomplete="name" maxlength="120" required>
+        <span class="apply__err" id="ap-name-err" hidden>Podaj imię i nazwisko.</span>
+      </div>
+      <div class="apply__field">
+        <label for="ap-company">Firma</label>
+        <input id="ap-company" name="company" type="text" autocomplete="organization" maxlength="160" required>
+        <span class="apply__err" id="ap-company-err" hidden>Podaj nazwę firmy.</span>
+      </div>
+      <div class="apply__field">
+        <label for="ap-turnover">Roczny obrót firmy</label>
+        <select id="ap-turnover" name="turnover" required>
+          <option value="" selected disabled>Wybierz przedział</option>
+          <option>Poniżej 1 mln PLN</option>
+          <option>1–5 mln PLN</option>
+          <option>5–20 mln PLN</option>
+          <option>Powyżej 20 mln PLN</option>
+        </select>
+        <span class="apply__err" id="ap-turnover-err" hidden>Wybierz przedział obrotu.</span>
+      </div>
+      <div class="apply__row">
+        <div class="apply__field">
+          <label for="ap-phone">Telefon</label>
+          <input id="ap-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="40" required>
+          <span class="apply__err" id="ap-phone-err" hidden>Podaj poprawny numer telefonu.</span>
+        </div>
+        <div class="apply__field">
+          <label for="ap-email">E-mail</label>
+          <input id="ap-email" name="email" type="email" inputmode="email" autocomplete="email" maxlength="160" required>
+          <span class="apply__err" id="ap-email-err" hidden>Podaj poprawny adres e-mail.</span>
+        </div>
+      </div>
+
+      <div class="apply__hp" aria-hidden="true"><label>Nie wypełniaj tego pola<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+
+      <div class="apply__consent">
+        <input id="ap-consent" name="consent" type="checkbox" required>
+        <label for="ap-consent">Wyrażam zgodę na przetwarzanie moich danych osobowych w celu rozpatrzenia zgłoszenia o członkostwo w klubie Tłuste Czwartki oraz kontaktu w tej sprawie, zgodnie z RODO.</label>
+        <span class="apply__err" id="ap-consent-err" hidden>Zgoda jest wymagana, aby wysłać zgłoszenie.</span>
+      </div>
+
+      <button class="apply__submit" type="submit" data-apply-submit>WYŚLIJ ZGŁOSZENIE</button>
+    </div>
+
+    <p class="apply__status" role="status" aria-live="polite" data-apply-status></p>
+    <p class="apply__status apply__status--error" role="alert" data-apply-error></p>
+  </form>
+</dialog>
+
 <script src="strefa.js" defer></script>
+<script src="zgloszenie.js" defer></script>
 <script src="zaproszenie.js" defer></script>
 </body>
 </html>

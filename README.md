@@ -37,3 +37,11 @@ Nie umieszczaj tam nic w `public/` — ten folder jest publiczny.
 przycisk DOŁĄCZ to prawdziwy `<button>` z PNG default/pressed. Tekst karty to żywy HTML.
 Kliknięcie emituje `window` event `club:join-request` i wywołuje opcjonalne `STREFA_CONFIG.onJoinRequest()` — podłącz tu formularz zgłoszeń
 (adres nie jest jeszcze zatwierdzony). Link „POPROŚ O ZAPROSZENIE →” z bloku 1 przewija do tej sceny.
+
+## Formularz zgłoszenia (DOŁĄCZ)
+
+`public/zgloszenie.{css,js}` + dialog w `index.html` + `api/apply.js`. Pola: imię i nazwisko, firma, roczny obrót (lista przedziałów), telefon, e-mail, zgoda RODO.
+Walidacja po stronie przeglądarki i serwera, pole-pułapka dla botów, limit 5 zgłoszeń / 10 min na IP (best effort).
+Dokąd trafiają zgłoszenia — zmienne środowiskowe Vercel (jedna z opcji):
+`APPLICATION_WEBHOOK_URL` (webhook JSON: Make/Zapier/n8n/CRM) albo `RESEND_API_KEY` + `APPLICATIONS_TO` (e-mail).
+Bez nich endpoint odpowiada 503 i nic nie zapisuje (formularz pokaże błąd).
