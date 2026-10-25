@@ -12,9 +12,9 @@
 .tb *, .tb *::before, .tb *::after { box-sizing: border-box; }
 
 /* ── Tło: prawdziwe zdjęcie wnętrza + ciemny winno-czarny gradient ── */
-.tb__bg { position: absolute; inset: -8px; z-index: 0; background: center / cover no-repeat url("assets/tickets/interior.jpg"); filter: saturate(.78) brightness(.5) blur(1.5px); transform: scale(1.015); }
+.tb__bg { position: absolute; inset: -8px; z-index: 0; background: center / cover no-repeat url("assets/tickets/interior.jpg"); filter: saturate(.85) brightness(.66) blur(1.5px); transform: scale(1.015); }
 .tb__shade { position: absolute; inset: 0; z-index: 1; pointer-events: none;
-  background: linear-gradient(90deg, rgb(17 9 7 / 46%), rgb(27 1 1 / 56%) 46%, rgb(17 9 7 / 48%)), radial-gradient(circle at 48% 40%, transparent 0 22%, rgb(27 1 1 / 42%) 75%); }
+  background: linear-gradient(90deg, rgb(17 9 7 / 40%), rgb(27 1 1 / 48%) 46%, rgb(17 9 7 / 42%)), radial-gradient(circle at 48% 40%, transparent 0 22%, rgb(27 1 1 / 38%) 75%); }
 
 /* ── Kurtyny: wspólny plik bloku kodu użyty dwa razy, prawa odbita przez scaleX(-1); bez podwiązek ── */
 .tb__curtain { position: absolute; z-index: 2; top: 0; bottom: 0; left: 0; width: var(--cw); overflow: hidden; pointer-events: none; container-type: size; }
