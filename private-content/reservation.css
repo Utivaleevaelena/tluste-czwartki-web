@@ -34,19 +34,19 @@
 .tb__venue svg { width: 26px; height: 26px; color: var(--tc-gold-light); flex: none; }
 .tb__venue i { width: 4px; height: 4px; border-radius: 50%; background: var(--tc-gold-light); }
 
-/* przycisk REZERWUJ MIEJSCE */
+/* przycisk REZERWUJ MIEJSCE — ta sama forma co „ZOBACZ ZDJĘCIA” w bloku 2 (pigułka, bordowa emalia, mosiężna ramka) */
 .tb__cta {
-  display: inline-flex; align-items: center; justify-content: center; gap: 20px; min-height: 64px; width: min(100%, 460px); padding: 0 28px; cursor: pointer;
-  font: 700 clamp(20px, 1.7vw, 30px) / 1 var(--tc-serif); letter-spacing: .08em; text-transform: uppercase; color: var(--tc-cream);
-  background: linear-gradient(180deg, var(--tc-wine-hover), var(--tc-wine)); border: 1px solid var(--tc-gold-light); border-radius: 6px;
-  box-shadow: 0 8px 20px rgb(60 6 2 / 40%), inset 0 1px 0 rgb(255 255 255 / 35%), inset 0 0 0 3px var(--tc-oxblood);
-  transition: transform 160ms ease, filter 160ms ease, box-shadow 160ms ease;
+  display: inline-flex; align-items: center; justify-content: center; gap: 14px; width: min(100%, 400px); min-height: 84px; padding: 0 28px; cursor: pointer;
+  font: 700 clamp(16px, 1.5vw, 24px) / 1 "Manrope", "Helvetica Neue", Arial, sans-serif; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; color: #f6e8cc;
+  background: linear-gradient(180deg, #8a0d1a 0%, #750813 55%, #5f0610 100%); border: 1px solid #c99645; border-radius: 999px;
+  box-shadow: inset 0 0 0 2px rgb(255 224 170 / .12), inset 0 1px 0 rgb(255 235 200 / .35), 0 6px 14px rgb(0 0 0 / .5), 0 0 0 1px rgb(0 0 0 / .4);
+  transition: background 200ms ease, box-shadow 200ms ease, transform 120ms ease;
 }
-.tb__cta svg { width: 26px; height: 26px; flex: none; transition: transform 220ms ease; }
-.tb__cta:hover { filter: brightness(1.1); }
+.tb__cta svg { width: 24px; height: 24px; flex: none; transition: transform 220ms cubic-bezier(.45, .05, .25, 1); }
+.tb__cta:hover { background: linear-gradient(180deg, #a3101f 0%, #930b18 55%, #750813 100%); box-shadow: inset 0 0 0 2px rgb(255 224 170 / .2), inset 0 1px 0 rgb(255 235 200 / .45), 0 0 18px rgb(224 189 117 / .38), 0 6px 14px rgb(0 0 0 / .5); }
 .tb__cta:hover svg { transform: translateX(5px); }
-.tb__cta:active { transform: translateY(3px); box-shadow: 0 3px 8px rgb(17 9 7 / 36%), inset 0 3px 7px rgb(17 9 7 / 42%), inset 0 0 0 3px var(--tc-oxblood); }
-.tb__cta:focus-visible { outline: none; box-shadow: var(--tc-focus), 0 8px 20px rgb(60 6 2 / 40%), inset 0 0 0 3px var(--tc-oxblood); }
+.tb__cta:active { background: #56060d; transform: translateY(2px) scale(.985); }
+.tb__cta:focus-visible { outline: 2px solid #f1d39b; outline-offset: 4px; }
 
 /* animacja wejścia (tylko gdy JS i ruch dozwolony) */
 .tb.js-anim .tb__rise { opacity: 0; transform: translateY(18px); }
@@ -70,7 +70,7 @@
   .tb__eyebrow { order: 1; } .tb__date { order: 2; } .tb__title { order: 3; } .tb__speaker-meta { order: 4; }
   .tb__speaker { order: 5; position: relative; left: auto; bottom: auto; width: min(64%, 260px); height: auto; margin: 18px auto 0; align-self: center; }
   .tb__actions { order: 6; margin-top: 20px; }
-  .tb__cta { width: 100%; }
+  .tb__cta { width: 100%; min-height: 68px; }
   .tb__venue { order: 7; margin-top: 24px; }
   .tb__date { font-size: clamp(48px, 15vw, 70px); }
   .tb__title { font-size: clamp(24px, 7.4vw, 32px); }
