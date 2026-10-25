@@ -21,7 +21,13 @@ module.exports = (req, res) => {
   }
   let rel = String(req.query.p || '').replace(/^\/+/, '');
   if (!rel || rel.endsWith('/')) rel += 'index.html';
-  const file = path.normalize(path.join(ROOT, rel));
+  let file = path.normalize(path.join(ROOT, rel));
+  // katalog bez końcowego „/” → przekierowanie, żeby względne ścieżki (../stub.css) działały
+  if (file.startsWith(ROOT + path.sep) && fs.existsSync(file) && fs.statSync(file).isDirectory()) {
+    res.statusCode = 302;
+    res.setHeader('Location', '/private/' + rel.replace(/\/+$/, '') + '/');
+    return res.end();
+  }
   if (!file.startsWith(ROOT + path.sep) || !fs.existsSync(file) || !fs.statSync(file).isFile()) {
     res.statusCode = 404;
     return res.end('Not found');
