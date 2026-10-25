@@ -3,7 +3,7 @@
 (() => {
   'use strict';
   const KEY = 'club-sound';
-  let ctx = null, master = null, rustleGain = null, rustleFilter = null, noiseBuf = null;
+  let ctx = null, master = null, noiseBuf = null, curtainBuf = null, lastRustle = 0;
   let enabled = false;
   try { enabled = localStorage.getItem(KEY) === '1'; } catch {}
 
@@ -28,18 +28,9 @@
     master.connect(comp); comp.connect(ctx.destination);
     noiseBuf = makeNoise(2);
 
-    // szelest kurtyny: pętla szumu → filtr, głośność i jasność zależą od prędkości ruchu
-    const src = ctx.createBufferSource(); src.buffer = noiseBuf; src.loop = true;
-    const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 350;
-    rustleFilter = ctx.createBiquadFilter(); rustleFilter.type = 'bandpass'; rustleFilter.frequency.value = 900; rustleFilter.Q.value = .6;
-    rustleGain = ctx.createGain(); rustleGain.gain.value = 0;
-    // delikatna „fałdowa” modulacja amplitudy
-    const lfo = ctx.createOscillator(); lfo.frequency.value = 6.5;
-    const lfoDepth = ctx.createGain(); lfoDepth.gain.value = .35;
-    const mod = ctx.createGain(); mod.gain.value = .65;
-    lfo.connect(lfoDepth); lfoDepth.connect(mod.gain);
-    src.connect(hp); hp.connect(rustleFilter); rustleFilter.connect(mod); mod.connect(rustleGain); rustleGain.connect(master);
-    src.start(); lfo.start();
+    // szelest kurtyny: prawdziwa próbka assets/sounds/curtain.mp3 (~0.8 s), ładowana przy włączeniu dźwięku
+    fetch('assets/sounds/curtain.mp3').then((r) => r.arrayBuffer()).then((ab) => new Promise((ok, no) => ctx.decodeAudioData(ab, ok, no)))
+      .then((buf) => { curtainBuf = buf; }).catch(() => {});
   }
 
   const t0 = () => ctx.currentTime;
@@ -74,19 +65,22 @@
       tone(140, 70, .16, .38);
       tone(2300, 1700, .09, .07, 'triangle', .004);
     },
-    // level 0..1 — z prędkości ruchu kurtyny
+    // level 0..1 — prędkość ruchu kurtyny. Próbka (~0.8 s, szczyt po ~0.4 s) startuje, gdy kurtyna rusza,
+    // i jest powtarzana co ~0.6 s, dopóki trwa wyraźny ruch; głośność zależy od prędkości.
     rustle(level) {
-      if (!ctx || !rustleGain) return;
-      const l = Math.max(0, Math.min(1, level));
-      const on = enabled ? l : 0, t = t0();
-      rustleGain.gain.setTargetAtTime(on * .55, t, .06);
-      rustleFilter.frequency.setTargetAtTime(700 + l * 2300, t, .08);
+      if (!enabled || !ctx || !curtainBuf || level < .1) return;
+      const now = ctx.currentTime;
+      if (now - lastRustle < .6) return;
+      lastRustle = now;
+      const s = ctx.createBufferSource(), g = ctx.createGain();
+      s.buffer = curtainBuf; s.playbackRate.value = .96 + Math.random() * .08;
+      g.gain.value = Math.min(1, .45 + level * .7) * 2.6; // nagranie jest ciche (szczyt ≈ 0.17)
+      s.connect(g); g.connect(master); s.start();
     },
     toggle(v) {
       enabled = v === undefined ? !enabled : !!v;
       try { localStorage.setItem(KEY, enabled ? '1' : '0'); } catch {}
       if (enabled) { init(); ctx && ctx.resume(); }
-      else if (rustleGain) rustleGain.gain.setTargetAtTime(0, t0(), .03);
       paint();
       if (enabled && ctx) api.key(); // potwierdzenie włączenia
     },
