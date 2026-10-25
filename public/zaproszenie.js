@@ -16,12 +16,19 @@
   /* ── Przesuw przy scrollu (jeden kontener: karta + ręka) ───── */
   let target = 0, now = 0, raf = 0, last = 0, inView = false;
   const span = () => Math.max(1, zone.offsetHeight - stage.offsetHeight);
-  const progress = () => (mq.matches ? 1 : clamp(-zone.getBoundingClientRect().top / span()));
+  // Postęp liczymy od chwili, gdy blok zaczyna wjeżdżać od dołu ekranu (top = wysokość okna),
+  // więc ręka rusza razem z nim, a nie dopiero po przypięciu sceny.
+  const progress = () => {
+    if (mq.matches) return 1;
+    const vh = innerHeight;
+    return clamp((vh - zone.getBoundingClientRect().top) / (vh + span()));
+  };
 
   function pose(p) {
-    // 0–.12 poza kadrem · .12–.60 wjazd · .60–.72 miękkie dojście z lekkim przeregulowaniem · potem stoi
-    const slide = easeOut(range(p, .12, .6));
-    const settle = range(p, .6, .72);
+    // poza kadrem → wjazd → miękkie dojście z lekkim przeregulowaniem → stoi
+    // q=0: blok dotyka dołu ekranu · q≈.45: scena przypięta · ręka jedzie od q=.03 do q=.5 (bez opóźnienia po przypięciu)
+    const slide = easeOut(range(p, .03, .5));
+    const settle = range(p, .5, .62);
     const overshoot = Math.sin(settle * Math.PI) * -1.2;      // vw
     const x = (1 - slide) * 70 + overshoot;                  // vw
     const y = (1 - slide) * 4;                               // svh
@@ -70,7 +77,7 @@
   document.querySelectorAll('a[href="#zaproszenie"]').forEach((a) => {
     a.addEventListener('click', (e) => {
       e.preventDefault();
-      const top = zone.getBoundingClientRect().top + scrollY + span() * .8;
+      const top = zone.getBoundingClientRect().top + scrollY + span() * .5;
       scrollTo({ top, behavior: mq.matches ? 'instant' : 'smooth' });
       history.replaceState(null, '', '#zaproszenie');
     });
