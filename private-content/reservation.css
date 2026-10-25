@@ -123,7 +123,54 @@
 .rsv__status--error { color: #a1281f; }
 .rsv.is-done .rsv__fields, .rsv.is-done .rsv__lead { display: none; }
 .rsv.is-done .rsv__status { font-size: 22px; margin: 12px 0 6px; }
-@media (max-width: 520px) { .rsv__row { grid-template-columns: 1fr; } .rsv__qty-row { flex-direction: column; align-items: stretch; } .rsv__qty { width: 100%; } }
+@media (max-width: 520px) { .rsv__row { grid-template-columns: 1fr; } }
+
+/* ── Telefon: całe okno mieści się na jednym ekranie, bez przewijania ── */
+@media (max-width: 520px), (max-height: 700px) {
+  .rsv { max-height: calc(100svh - 16px); width: min(560px, calc(100vw - 16px)); }
+  .rsv__form { margin: 6px; padding: 20px 16px 14px; }
+  .rsv__close { right: 2px; top: 2px; }
+  .rsv__eyebrow { margin-bottom: 4px; font-size: 10px; padding-inline: 36px; }
+  .rsv__title { margin-bottom: 2px; font-size: clamp(20px, 6vw, 26px); }
+  .rsv__lead { margin-bottom: 8px; font-size: 15px; }
+  .rsv__fields { gap: 8px; }
+  .rsv__row { gap: 8px; }
+  .rsv__field { gap: 2px; }
+  .rsv__field label, .rsv__qty-label { font-size: 10px; }
+  .rsv input[type="text"], .rsv input[type="tel"], .rsv input[type="email"] { min-height: 40px; padding-block: 4px; font-size: 17px; }
+  .rsv__err { font-size: 11.5px; line-height: 1.1; }
+  .rsv__qty { grid-template-columns: 42px minmax(44px, 1fr) 42px; width: 150px; }
+  .rsv__qty-btn { min-height: 42px; }
+  .rsv__qty-row { flex-direction: row; align-items: center; }
+  .rsv__consent label { font-size: 12.5px; line-height: 1.3; }
+  .rsv__submit { margin-top: 2px; min-height: 46px; font-size: 14px; }
+  .rsv__status { margin-top: 8px; font-size: 13px; }
+}
+@media (orientation: landscape) and (max-height: 500px) {
+  .rsv { width: min(760px, calc(100vw - 16px)); }
+  .rsv__fields { grid-template-columns: 1fr 1fr; column-gap: 14px; }
+  .rsv__row { display: contents; }
+  .rsv__qty-row, .rsv__consent, .rsv__submit { grid-column: 1 / -1; }
+  .rsv__eyebrow, .rsv__lead { display: none; }
+}
+
+/* bardzo niskie ekrany (np. iPhone SE, telefon poziomo): jeszcze ciaśniej */
+@media (max-height: 600px) {
+  .rsv__form { padding: 14px 14px 10px; }
+  .rsv__title { font-size: 20px; }
+  .rsv__lead { margin-bottom: 4px; font-size: 14px; }
+  .rsv__fields { gap: 5px; }
+  .rsv input[type="text"], .rsv input[type="tel"], .rsv input[type="email"] { min-height: 36px; }
+  .rsv__qty-btn { min-height: 38px; }
+  .rsv__consent label { font-size: 12px; line-height: 1.25; }
+  .rsv__submit { min-height: 42px; }
+}
+@media (orientation: landscape) and (max-height: 420px) {
+  .rsv__form { padding: 10px 14px 8px; }
+  .rsv__fields { gap: 4px 14px; }
+  .rsv__title { font-size: 18px; }
+  .rsv__close { width: 40px; height: 40px; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   .tb *, .tb *::before, .tb *::after, .rsv[open] { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
