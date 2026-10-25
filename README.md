@@ -54,6 +54,6 @@ Na następne wydarzenie: podmień teksty/datę w `index.html` (sekcja `.event`, 
 ## Фотогалерея (второй блок на `/private/`, `#fotogaleria`)
 
 Идёт сразу после блока «Relacja ze spotkania». Файлы: `private-content/{gallery.css,gallery.js}`, секция `.gal` в `private-content/index.html`, `assets/gallery-reveal/scene/*` (фон, шторы, сотрудник) и `assets/gallery-reveal/photos/gallery-01..08.jpg`.
-Кнопка `ZOBACZ RELACJĘ` в первом блоке прокручивает к галерее. Состояния `closed → opening → open → closing`; анимируются только `transform`/`opacity`; reduced-motion — мгновенная смена.
+Состояния `closed → opening → open → closing`; анимируются только `transform`/`opacity`; reduced-motion — мгновенная смена.
 **Ссылка «POBIERZ ZDJĘCIA»:** атрибут `data-download-href=""` у `<section class="gal">`. Пока пусто — кнопка в состоянии «wkrótce».
 **Фото следующего события:** замените 8 файлов в `assets/gallery-reveal/photos/` и `alt` в `index.html`.
