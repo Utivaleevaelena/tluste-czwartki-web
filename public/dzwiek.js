@@ -64,6 +64,8 @@
 
   const api = {
     get enabled() { return enabled; },
+    get ready() { return !!rustleSrc; },        // nagranie szelestu zdekodowane
+    get state() { return ctx ? ctx.state : 'none'; },
     // metaliczny „klik” złotego klawisza: krótki stuk + dźwięczny szczyt + lekki ciężar
     key() {
       if (!enabled || !ctx) return;
@@ -132,16 +134,22 @@
   // jeśli dźwięk był włączony wcześniej: kontekst audio ruszy dopiero po pierwszym geście (polityka autoodtwarzania).
   // Przewijanie kółkiem NIE jest takim gestem — dlatego jednorazowa podpowiedź przy ikonie.
   if (enabled) {
+    init();                       // kontekst powstaje od razu (wstrzymany) i dekoduje nagranie szelestu, zanim padnie pierwszy gest
     const evs = ['pointerdown', 'touchstart', 'click', 'keydown'];
-    const hint = document.createElement('div');
-    hint.className = 'sound-hint'; hint.setAttribute('role', 'status'); hint.textContent = 'Dotknij ekranu, aby uruchomić dźwięk';
-    document.body.appendChild(hint);
+    let hint = null;
+    // podpowiedź tylko wtedy, gdy przeglądarka rzeczywiście zablokowała dźwięk do pierwszego gestu
+    setTimeout(() => {
+      if (!ctx || ctx.state === 'running') return;
+      hint = document.createElement('div');
+      hint.className = 'sound-hint'; hint.setAttribute('role', 'status'); hint.textContent = 'Dotknij ekranu, aby uruchomić dźwięk';
+      document.body.appendChild(hint);
+      setTimeout(() => hint && hint.remove(), 7000);
+    }, 400);
     const wake = () => {
       init(); ctx && ctx.resume();
-      hint.remove(); evs.forEach((t) => removeEventListener(t, wake, true));
+      hint && hint.remove(); evs.forEach((t) => removeEventListener(t, wake, true));
     };
     evs.forEach((t) => addEventListener(t, wake, { capture: true, passive: true }));
-    setTimeout(() => hint.remove(), 7000);
   }
   document.addEventListener('visibilitychange', () => { if (!ctx) return; document.hidden ? ctx.suspend() : enabled && ctx.resume(); });
 })();
