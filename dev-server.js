@@ -14,6 +14,7 @@ try {
 
 const verify = require('./api/verify');
 const apply = require('./api/apply');
+const tickets = require('./api/tickets');
 const priv = require('./api/private');
 const PUBLIC = path.join(__dirname, 'public');
 const TYPES = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.png': 'image/png', '.jpg': 'image/jpeg', '.svg': 'image/svg+xml' };
@@ -27,6 +28,11 @@ function shim(res) {
 http.createServer((req, res) => {
   const url = new URL(req.url, 'http://x');
   shim(res);
+  if (url.pathname.startsWith('/api/tickets/')) {
+    let raw = '';
+    req.on('data', (c) => (raw += c));
+    return req.on('end', () => { try { req.body = JSON.parse(raw || '{}'); } catch { req.body = {}; } req.query = { action: url.pathname.split('/').pop() }; tickets(req, res); });
+  }
   if (url.pathname === '/api/apply') {
     let raw = '';
     req.on('data', (c) => (raw += c));

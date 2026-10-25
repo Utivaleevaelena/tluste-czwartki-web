@@ -7,10 +7,11 @@
   <title>Relacja ze spotkania — Tłuste Czwartki</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,700;6..96,800&family=Manrope:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,700;6..96,800&family=Manrope:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="preload" as="image" href="assets/events/marian-popinigis/speaker.png">
   <link rel="stylesheet" href="event.css">
   <link rel="stylesheet" href="gallery.css">
+  <link rel="stylesheet" href="tickets.css">
 </head>
 <body>
 
@@ -177,7 +178,94 @@
   </dialog>
 </section>
 
+
+<!--
+  Blok 3: najbliższe spotkanie — bilet / rezerwacja.
+  Wszystkie teksty i dane wydarzenia są w jednym obiekcie CONTENT na początku tickets.js (atrybuty data-t).
+  Backend: /api/tickets/* → api/tickets.js → adapter w api/_tickets.js (DEMO, bez płatności).
+-->
+<section class="tb" id="bilety" data-tb aria-labelledby="tb-title">
+  <div class="tb__bg" aria-hidden="true"></div>
+  <div class="tb__shade" aria-hidden="true"></div>
+
+  <!-- wspólna czerwona kurtyna z bloku kodu (/assets/curtain-open-left.png); prawa strona odbita przez scaleX(-1) -->
+  <div class="tb__curtain tb__curtain--left" aria-hidden="true">
+    <img src="/assets/curtain-open-left.png" alt="" width="1671" height="941" loading="lazy" decoding="async">
+  </div>
+  <div class="tb__curtain tb__curtain--right" aria-hidden="true">
+    <img src="/assets/curtain-open-left.png" alt="" width="1671" height="941" loading="lazy" decoding="async">
+  </div>
+
+  <div class="tb__inner">
+    <img class="tb__speaker" src="assets/tickets/speaker.png" alt="Michał Borowski" width="1099" height="1431" loading="lazy" decoding="async">
+
+    <div class="tb__editorial">
+      <p class="tb__eyebrow tb__rise" style="--r:0"><span data-t="eyebrow"></span></p>
+      <p class="tb__date tb__rise" style="--r:1"><time datetime="2026-11-26" data-t="event.displayDate"></time></p>
+      <h2 class="tb__title tb__rise" id="tb-title" style="--r:2"><span data-t="event.titleMain"></span> <span class="tb__accent" data-t="event.titleAccent"></span></h2>
+      <div class="tb__speaker-meta tb__rise" style="--r:3">
+        <p class="tb__name" data-t="event.speaker"></p>
+        <p class="tb__role" data-t="event.speakerRole"></p>
+      </div>
+      <address class="tb__venue tb__rise" style="--r:4">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 5.2-8 11-8 11S4 15.2 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+        <span data-t="event.venue"></span><i aria-hidden="true"></i><span data-t="event.location"></span>
+      </address>
+    </div>
+
+    <div class="tb__panel tb__slide" data-panel-wrap>
+      <h3 class="tb__heading"><span data-t="booking.heading"></span></h3>
+
+      <div class="tb__tabs" role="tablist" aria-label="Sposób rezerwacji" data-tabs>
+        <span class="tb__tab-thumb" aria-hidden="true"></span>
+        <button class="tb__tab" type="button" role="tab" id="tab-member" aria-selected="false" aria-controls="tb-form" tabindex="-1" data-mode="member"><span data-t="booking.modes.member"></span></button>
+        <button class="tb__tab" type="button" role="tab" id="tab-guest" aria-selected="true" aria-controls="tb-form" data-mode="guest"><span data-t="booking.modes.guest"></span></button>
+      </div>
+
+      <form class="tb__form" id="tb-form" role="tabpanel" aria-labelledby="tab-guest" novalidate data-form>
+        <!-- Gość z zaproszeniem -->
+        <div class="tb__field" data-guest-only>
+          <label for="tb-code" data-t="booking.inviteCodeLabel"></label>
+          <input id="tb-code" name="code" type="text" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="64"
+                 aria-describedby="tb-msg" data-code>
+        </div>
+
+        <!-- Członek klubu -->
+        <div class="tb__member" data-member-only hidden>
+          <p class="tb__member-line" data-member-avail></p>
+          <p class="tb__member-terms" data-member-terms hidden></p>
+        </div>
+
+        <div class="tb__qty-row">
+          <span class="tb__qty-label" id="tb-qty-label" data-t="booking.quantityLabel"></span>
+          <div class="tb__qty" role="group" aria-labelledby="tb-qty-label">
+            <button class="tb__qty-btn" type="button" aria-label="Zmniejsz liczbę miejsc" data-minus>−</button>
+            <output class="tb__qty-val" aria-live="polite" data-qty>1</output>
+            <button class="tb__qty-btn" type="button" aria-label="Zwiększ liczbę miejsc" data-plus>+</button>
+          </div>
+        </div>
+
+        <p class="tb__price" data-price hidden></p>
+
+        <button class="tb__cta" type="submit" disabled data-cta>
+          <span data-cta-label></span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M14 7l5 5-5 5"/></svg>
+        </button>
+
+        <div class="tb__status" id="tb-msg" role="status" aria-live="polite" data-msg></div>
+
+        <button class="tb__switch" type="button" data-switch>
+          <span data-switch-label></span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M14 7l5 5-5 5"/></svg>
+        </button>
+        <p class="tb__note" data-t="booking.confirmationCopy"></p>
+      </form>
+    </div>
+  </div>
+</section>
+
 <script src="/dzwiek.js" defer></script>
 <script src="gallery.js" defer></script>
+<script src="tickets.js" defer></script>
 </body>
 </html>
