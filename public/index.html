@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Strefa Klubowicza</title>
+  <meta name="description" content="Strefa Klubowicza — wejście dla członków klubu Tłuste Czwartki.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Montserrat:wght@500&display=swap" rel="stylesheet">
+  <link rel="preload" as="image" href="assets/curtain-closed.png">
+  <link rel="stylesheet" href="strefa.css">
+  <script>
+    /* Konfiguracja bloku. Prawidłowy kod NIE jest tu przechowywany — weryfikuje go wyłącznie serwer. */
+    window.STREFA_CONFIG = {
+      endpoint: '/api/members/verify',   // POST { code } -> { ok: boolean, redirect?: string }
+      redirect: '/private/',              // dokąd przejść po sukcesie (serwer może nadpisać)
+      inviteHref: '#zaproszenie'         // formularz / strona zaproszenia
+    };
+  </script>
+</head>
+<body>
+
+<section class="zone" id="strefa" data-zone aria-labelledby="strefa-title">
+  <div class="stage" data-stage>
+
+    <!-- Ściana -->
+    <div class="layer wall" aria-hidden="true" data-wall></div>
+    <div class="layer light" aria-hidden="true" data-light></div>
+
+    <!-- Kurtyna: przecięta pośrodku, połowy rozsuwają się na boki i zostają przy krawędziach kadru -->
+    <div class="layer curtain-closed" aria-hidden="true">
+      <div class="curtain-half curtain-half--left" data-curtain-left>
+        <img src="assets/curtain-closed.png" alt="" width="1672" height="941" decoding="async" fetchpriority="high">
+      </div>
+      <div class="curtain-half curtain-half--right" data-curtain-right>
+        <img src="assets/curtain-closed.png" alt="" width="1672" height="941" decoding="async" fetchpriority="high">
+      </div>
+    </div>
+
+    <div class="column" data-column>
+      <header class="head">
+        <h2 class="title" id="strefa-title">STREFA KLUBOWICZA</h2>
+        <span class="rule" aria-hidden="true"></span>
+      </header>
+
+      <!-- Żywy portret -->
+      <div class="portrait" aria-hidden="true" data-portrait>
+        <div class="portrait__eye" data-eye>
+          <div class="scene">
+            <img class="scene__base" src="assets/eye-socket-base.png" alt="" width="1200" height="800" decoding="async">
+            <div class="scene__iris-clip">
+              <img class="scene__iris" src="assets/iris-pupil.png" alt="" width="520" height="520" decoding="async" data-iris>
+            </div>
+            <img class="scene__lid" src="assets/closed-eyelid.png" alt="" width="1000" height="563" decoding="async" data-lid>
+          </div>
+          <span class="portrait__depth"></span>
+        </div>
+        <img class="portrait__frame" src="assets/portrait-frame.png" alt="" width="760" height="912" decoding="async">
+      </div>
+
+      <p class="caption" data-caption>WEJDŹ, JEŚLI MASZ KOD</p>
+
+      <!-- Kod dostępu: osobne złote klawisze na ścianie, bez panelu i wyświetlacza -->
+      <form class="keypad" data-keypad data-state="idle" novalidate aria-describedby="keypad-status">
+        <label class="sr-only" for="club-code">Kod dostępu (4 cyfry)</label>
+        <input class="sr-only" id="club-code" name="code" type="text" inputmode="numeric" pattern="[0-9]*"
+               maxlength="4" autocomplete="one-time-code" autocapitalize="off" spellcheck="false" data-input>
+
+        <div class="code-dots" aria-hidden="true" data-dots>
+          <span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span>
+        </div>
+
+        <div class="pad" data-pad>
+          <div class="keys" role="group" aria-label="Klawiatura numeryczna">
+            <button class="code-key" type="button" data-key="1" aria-label="Cyfra 1">
+              <img class="code-key__img code-key__img--default" src="assets/keypad/default/1.png" alt="" aria-hidden="true" draggable="false" width="420" height="420">
+              <img class="code-key__img code-key__img--pressed" src="assets/keypad/pressed/1.png" alt="" aria-hidden="true" draggable="false" width="420" height="420">
+            </button>
+            <button class="code-key" type="button" data-key="2" aria-label="Cyfra 2">
+              <img class="code-key__img code-key__img--default" src="assets/keypad/default/2.png" alt="" aria-hidden="true" draggable="false" width="420" height="420">
+              <img class="code-key__img code-key__img--pressed" src="assets/keypad/pressed/2.png" alt="" aria-hidden="true" draggable="false" width="420" height="420">
+            </button>
+            <button class="code-key" type="button" data-key="3" aria-label="Cyfra 3">
+              <img class="code-key__img code-key__img--default" src="assets/keypad/default/3.png" alt="" aria-hidden="true" draggable="false" width="420" height="420">
+              <img class="code-key__img code-key__img--pressed" src="assets/keypad/pressed/3.png" alt="" aria-hidden="true" draggable="false" width="420" height="420">
+            </button>
+            <button class="code-key" type="button" data-key="4" aria-label="Cyfra 4">
+              <img class="code-key__img code-key__img--default" src="assets/keypad/default/4.png" alt="" aria-hidden="true" draggable="false" width="420" height="420">
+              <img class="code-key__img code-key__img--pressed" src="assets/keypad/pressed/4.png" alt="" aria-hidden="true" draggable="false" width="420" height="420">
+            </button>
+            <button class="code-key" type="button" data-key="5" aria-label="Cyfra 5">
+              <img class="code-key__img code-key__img--default" src="assets/keypad/default/5.png" alt="" aria-hidden="true" draggable="false" width="420" height="420">
+              <img class="code-key__img code-key__img--pressed" src="assets/keypad/pressed/5.png" alt="" aria-hidden="true" draggable="false" width="420" height="420">
+            </button>
+            <button class="code-key" type="button" data-key="6" aria-label="Cyfra 6">
+              <img class="code-key__img code-key__img--default" src="assets/keypad/default/6.png" alt="" aria-hidden="true" draggable="false" width="420" height="420">
+              <img class="code-key__img code-key__img--pressed" src="assets/keypad/pressed/6.png" alt="" aria-hidden="true" draggable="false" width="420" height="420">
+            </button>
+            <button class="code-key" type="button" data-key="7" aria-label="Cyfra 7">
+              <img class="code-key__img code-key__img--default" src="assets/keypad/default/7.png" alt="" aria-hidden="true" draggable="false" width="420" height="420">
+              <img class="code-key__img code-key__img--pressed" src="assets/keypad/pressed/7.png" alt="" aria-hidden="true" draggable="false" width="420" height="420">
+            </button>
+            <button class="code-key" type="button" data-key="8" aria-label="Cyfra 8">
+              <img class="code-key__img code-key__img--default" src="assets/keypad/default/8.png" alt="" aria-hidden="true" draggable="false" width="420" height="420">
+              <img class="code-key__img code-key__img--pressed" src="assets/keypad/pressed/8.png" alt="" aria-hidden="true" draggable="false" width="420" height="420">
+            </button>
+            <button class="code-key" type="button" data-key="9" aria-label="Cyfra 9">
+              <img class="code-key__img code-key__img--default" src="assets/keypad/default/9.png" alt="" aria-hidden="true" draggable="false" width="420" height="420">
+              <img class="code-key__img code-key__img--pressed" src="assets/keypad/pressed/9.png" alt="" aria-hidden="true" draggable="false" width="420" height="420">
+            </button>
+            <button class="code-key" type="button" data-action="backspace" aria-label="Usuń cyfrę">
+              <img class="code-key__img code-key__img--default" src="assets/keypad/default/backspace.png" alt="" aria-hidden="true" draggable="false" width="420" height="420">
+              <img class="code-key__img code-key__img--pressed" src="assets/keypad/pressed/backspace.png" alt="" aria-hidden="true" draggable="false" width="420" height="420">
+            </button>
+            <button class="code-key" type="button" data-key="0" aria-label="Cyfra 0">
+              <img class="code-key__img code-key__img--default" src="assets/keypad/default/0.png" alt="" aria-hidden="true" draggable="false" width="420" height="420">
+              <img class="code-key__img code-key__img--pressed" src="assets/keypad/pressed/0.png" alt="" aria-hidden="true" draggable="false" width="420" height="420">
+            </button>
+            <button class="code-key" type="button" data-action="confirm" aria-label="Potwierdź kod">
+              <img class="code-key__img code-key__img--default" src="assets/keypad/default/confirm.png" alt="" aria-hidden="true" draggable="false" width="420" height="420">
+              <img class="code-key__img code-key__img--pressed" src="assets/keypad/pressed/confirm.png" alt="" aria-hidden="true" draggable="false" width="420" height="420">
+            </button>
+          </div>
+          <button class="code-open" type="submit" aria-label="Otwórz strefę klubowicza" data-submit>
+            <img class="code-open__img code-open__img--default" src="assets/keypad/open-default.png" alt="" aria-hidden="true" draggable="false" width="860" height="331">
+            <img class="code-open__img code-open__img--pressed" src="assets/keypad/open-pressed.png" alt="" aria-hidden="true" draggable="false" width="860" height="331">
+          </button>
+        </div>
+      </form>
+
+      <div class="status" id="keypad-status">
+        <p class="status__msg" role="status" aria-live="polite" data-status></p>
+        <p class="status__msg status__msg--error" role="alert" data-error></p>
+      </div>
+
+      <a class="invite" href="#zaproszenie" data-invite>NIE MASZ KODU? POPROŚ O ZAPROSZENIE →</a>
+    </div>
+  </div>
+</section>
+
+<div class="after" aria-hidden="true"></div>
+
+<script src="strefa.js" defer></script>
+</body>
+</html>

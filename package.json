@@ -1,0 +1,7 @@
+{
+  "name": "tluste-czwartki-web",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Tłuste Czwartki — strona z zamkniętą Strefą Klubowicza",
+  "engines": { "node": ">=20" }
+}

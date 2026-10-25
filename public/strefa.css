@@ -1,0 +1,256 @@
+/* Strefa Klubowicza — kurtyna, żywy portret, kod dostępu */
+
+:root {
+  --club-panel-top: #3b281b;
+  --club-panel-mid: #17100c;
+  --club-panel-bottom: #0b0807;
+  --club-bronze-light: #d6a467;
+  --club-bronze: #9a6233;
+  --club-bronze-dark: #4a2c1a;
+  --club-ivory: #f3e2c8;
+  --club-ivory-bright: #fff4df;
+  --club-ivory-shadow: #d7c1a3;
+  --club-error: #c16c57;
+  --club-success: #e2c873;
+  --club-transition-fast: 110ms;
+  --club-transition-ui: 170ms;
+
+  --serif: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --sans: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+
+  /* wspólna szerokość portretu i panelu (referencja: ~16.5vw) */
+  --gap: 12px;
+  --vis: clamp(46px, min(4.6vw, calc((90svh - 220px) / 9.2)), 76px);
+  --kw: calc(var(--vis) * 3 + var(--gap) * 2);
+  --pw: calc(var(--vis) * 3.5);
+  --col-x: 50vw;
+  --rest-pct: 36;                /* ile % połowy kurtyny zostaje w kadrze po otwarciu */
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { background: #0d0505; }
+body { margin: 0; background: #0d0505; color: var(--club-ivory); }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* ── Sekcja przypięta (sticky) ─────────────────────────────── */
+.zone { position: relative; height: 300svh; } /* 140svh animacji + 60svh zatrzymania na gotowej scenie */
+.stage {
+  position: sticky; top: 0; height: 100svh; overflow: clip;
+  background: #0d0505; isolation: isolate;
+}
+.after { height: 60svh; background: #0d0505; }
+
+.layer { position: absolute; inset: 0; pointer-events: none; }
+
+/* ── Ściana ────────────────────────────────────────────────── */
+.wall {
+  z-index: 1;
+  background: url("assets/wall.jpg") center / cover no-repeat, #3a0d0f;
+}
+.wall::after { /* winieta: prawa strona ciemnieje jak w referencji */
+  content: ""; position: absolute; inset: 0;
+  background:
+    linear-gradient(90deg, rgb(8 2 2 / 0) 38%, rgb(8 2 2 / .72) 100%),
+    linear-gradient(180deg, rgb(8 2 2 / .25), rgb(8 2 2 / 0) 30%, rgb(8 2 2 / .45) 100%);
+}
+.light {
+  z-index: 2; mix-blend-mode: soft-light;
+  background: radial-gradient(ellipse 34% 52% at var(--col-x) 32%, rgb(255 168 110 / .85), rgb(255 168 110 / 0) 70%);
+}
+
+/* ── Kurtyny ───────────────────────────────────────────────── */
+.curtain-closed { z-index: 7; } /* dwie połowy rozsuwają się na boki i odsłaniają scenę */
+
+.curtain-half { position: absolute; top: 0; bottom: 0; width: 50%; overflow: hidden; will-change: transform; }
+.curtain-half--left { left: 0; }
+.curtain-half--right { right: 0; }
+.curtain-half::after { /* cień na krawędzi cięcia */
+  content: ""; position: absolute; top: 0; bottom: 0; width: 14px; pointer-events: none;
+}
+.curtain-half--left::after { right: 0; background: linear-gradient(90deg, transparent, rgb(0 0 0 / .55)); }
+.curtain-half--right::after { left: 0; background: linear-gradient(270deg, transparent, rgb(0 0 0 / .55)); }
+
+.curtain-half img {
+  position: absolute; top: 0; height: 100%; width: 200%; max-width: none; display: block;
+  object-fit: cover; object-position: left center; user-select: none;
+}
+.curtain-half--left img { left: 0; }
+.curtain-half--right img { left: -100%; }
+
+/* ── Kolumna: tytuł → portret → kod → link ─────────────────── */
+.column {
+  /* bez translate/z-index: kolumna nie tworzy kontekstu, więc tytuł może leżeć nad zasuniętą kurtyną */
+  position: absolute; top: 0; bottom: 0; width: 100vw;
+  left: calc(var(--col-x) - 50vw); pointer-events: none;
+  display: flex; flex-direction: column; align-items: center;
+  padding-block: clamp(20px, 6.2svh, 62px) clamp(14px, 3svh, 30px);
+  gap: clamp(8px, 1.6svh, 18px);
+}
+
+.column > * { position: relative; z-index: 4; pointer-events: auto; }
+.column > .head { z-index: 8; pointer-events: none; }
+.head { display: grid; justify-items: center; gap: clamp(8px, 1.4svh, 14px); }
+.title {
+  margin: 0; font: 500 clamp(13px, 1.12vw, 19px) / 1 var(--serif);
+  letter-spacing: .34em; padding-left: .34em; /* kompensacja trackingu */
+  color: var(--club-ivory); text-shadow: 0 1px 12px rgb(0 0 0 / .65);
+}
+.rule { width: clamp(36px, 3.1vw, 52px); height: 1px; background: rgb(243 226 200 / .55); }
+
+/* ── Portret ───────────────────────────────────────────────── */
+.portrait {
+  position: relative; width: var(--pw, var(--kw)); aspect-ratio: 1145 / 1374;
+  margin-top: clamp(4px, 1.2svh, 14px);
+}
+.portrait__frame {
+  position: absolute; inset: 0; width: 100%; height: 100%; z-index: 3;
+  filter: drop-shadow(0 14px 16px rgb(0 0 0 / .55));
+}
+.portrait__eye {
+  position: absolute; z-index: 1; left: 17%; top: 13.5%; width: 66%; height: 71%;
+  border-radius: 50%; overflow: hidden; background: #120907;
+}
+.portrait__depth { /* wewnętrzny cień — głębia pod ramą */
+  position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 5;
+  box-shadow: inset 0 0 calc(var(--pw) * .09) calc(var(--pw) * .015) rgb(0 0 0 / .72);
+}
+.scene {
+  position: absolute; left: 50%; top: 50%; width: 224%; aspect-ratio: 3 / 2;
+  translate: -53.4% -53%;
+}
+.scene img { position: absolute; display: block; user-select: none; -webkit-user-drag: none; }
+.scene__base { inset: 0; width: 100%; height: 100%; }
+.scene__iris-clip {
+  position: absolute; inset: 0; pointer-events: none;
+  clip-path: ellipse(17.2% 9.4% at 53.4% 53%);
+}
+.scene__iris-clip::after { /* cień powieki na tęczówce */
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgb(20 8 4 / .55) 36%, rgb(20 8 4 / .05) 50%, rgb(20 8 4 / .05) 58%, rgb(20 8 4 / .38) 64%);
+}
+.scene__iris {
+  left: 53.4%; top: 53%; width: 17.4%; height: auto; translate: -50% -50%;
+  will-change: transform;
+}
+.scene__lid {
+  left: -5%; top: -6.5%; width: 116.5%; height: auto; opacity: 0;
+  -webkit-mask-image: radial-gradient(ellipse 50% 49% at 50% 55%, #000 62%, transparent 98%);
+          mask-image: radial-gradient(ellipse 50% 49% at 50% 55%, #000 62%, transparent 98%);
+  will-change: opacity;
+}
+
+/* ── Podpis i status ───────────────────────────────────────── */
+.caption {
+  margin: clamp(6px, 1.6svh, 18px) 0 0;
+  font: 500 clamp(10px, .76vw, 13px) / 1.2 var(--sans); letter-spacing: .3em; padding-left: .3em;
+  color: var(--club-ivory); text-align: center;
+}
+.status {
+  position: relative; min-height: 1.5em; width: min(94vw, 420px);
+  display: grid; place-items: center;
+}
+.status__msg {
+  grid-area: 1 / 1; margin: 0; text-align: center;
+  font: 500 clamp(10px, .72vw, 12px) / 1.35 var(--sans); letter-spacing: .22em; text-transform: uppercase;
+  color: var(--club-ivory-shadow);
+}
+.status__msg--error { color: #e59a85; }
+.status__msg:empty { display: none; }
+
+.invite {
+  margin-top: auto; padding-bottom: 5px;
+  font: 500 clamp(9.5px, .7vw, 12px) / 1.3 var(--sans); letter-spacing: .24em;
+  color: var(--club-ivory); text-decoration: none; text-align: center;
+  border-bottom: 1px solid rgb(243 226 200 / .75);
+  transition: opacity var(--club-transition-ui) ease, border-color var(--club-transition-ui) ease;
+}
+.invite:hover { border-bottom-color: var(--club-ivory-bright); }
+.invite:focus-visible { outline: 2px solid var(--club-ivory-bright); outline-offset: 5px; }
+
+/* ── Kod dostępu: złote klawisze PNG na ścianie ─────────────
+   Płótno PNG ma ~50% przezroczystego marginesu: widoczny klawisz = --vis,
+   obraz jest 1.99× większy i wycentrowany w przycisku. */
+.keypad { position: relative; margin: 0; width: var(--kw); display: grid; justify-items: center; row-gap: clamp(8px, 1.5svh, 16px); }
+.code-dots { display: flex; justify-content: center; gap: 14px; min-height: 14px; align-items: center; pointer-events: none; }
+.code-dot {
+  width: 9px; aspect-ratio: 1; border-radius: 50%;
+  background: #f3d79d; box-shadow: 0 0 10px rgb(229 189 112 / 55%);
+  opacity: 0; transform: scale(.55);
+  transition: opacity 160ms ease, transform 220ms cubic-bezier(.2, .8, .2, 1);
+}
+.code-dot.is-filled { opacity: 1; transform: scale(1); }
+
+.pad { display: grid; row-gap: var(--gap); justify-items: center; }
+.keys { display: grid; grid-template-columns: repeat(3, var(--vis)); gap: var(--gap); }
+
+.code-key, .code-open {
+  position: relative; padding: 0; margin: 0; border: 0; background: transparent; cursor: pointer;
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation; user-select: none;
+}
+.code-key { inline-size: var(--vis); block-size: var(--vis); }
+.code-open { inline-size: var(--kw); block-size: calc(var(--kw) * .32); }
+.code-key::after, .code-open::after { content: ""; position: absolute; inset: -5px; } /* strefa dotyku ≥ 44px */
+
+.code-key__img, .code-open__img {
+  position: absolute; left: 50%; top: 50%; translate: -50% -50%;
+  max-width: none; pointer-events: none; user-select: none; -webkit-user-drag: none;
+}
+.code-key__img { width: calc(var(--vis) * 1.99); height: calc(var(--vis) * 1.99); }
+.code-open__img { width: calc(var(--kw) / .845); height: auto; }
+/* oba stany leżą w tym samym kontenerze: przełączenie nie zmienia rozmiaru ani nie miga */
+.code-key__img--pressed, .code-open__img--pressed { visibility: hidden; }
+.is-pressed > .code-key__img--default, .is-pressed > .code-open__img--default { visibility: hidden; }
+.is-pressed > .code-key__img--pressed, .is-pressed > .code-open__img--pressed { visibility: visible; }
+
+.code-key:focus-visible, .code-open:focus-visible { outline: 2px solid var(--club-ivory-bright); outline-offset: 3px; border-radius: 4px; }
+.keypad button:disabled { cursor: wait; filter: brightness(.78) saturate(.8); }
+
+/* Stany */
+.keypad[data-state="checking"] .code-dot.is-filled { animation: dot-pulse 900ms ease-in-out infinite; }
+@keyframes dot-pulse { 50% { opacity: .45; transform: scale(.8); } }
+.keypad[data-state="success"] .pad { filter: drop-shadow(0 0 18px rgb(240 190 110 / .6)); transition: filter 380ms ease; }
+.keypad[data-state="success"] .code-dot { box-shadow: 0 0 14px rgb(240 200 120 / .9); }
+.pad.is-shake { animation: shake 220ms cubic-bezier(.36, .07, .19, .97); }
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); } 40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); } 80% { transform: translateX(4px); }
+}
+
+/* Sukces: cieplejsze światło */
+.stage.is-success .light { filter: brightness(1.45) saturate(1.1); transition: filter 380ms ease; }
+
+/* niskie okna desktopowe: mniejszy portret, żeby całość zmieściła się w 100svh */
+@media (min-width: 768px) and (max-height: 800px) {
+  :root { --pw: calc(var(--vis) * 3.3); }
+}
+
+/* ── Tablet ────────────────────────────────────────────────── */
+@media (max-width: 1199px) {
+  :root { --col-x: 50vw; --rest-pct: 28; }
+}
+
+/* ── Telefon: jedna kolumna na środku, wąski brzeg kurtyny ─── */
+@media (max-width: 767px) {
+  :root { --col-x: 50vw; --rest-pct: 14; --vis: clamp(46px, calc((100svh - 400px) / 4.96), 64px); --gap: 10px; }
+  .column { padding-block: clamp(14px, 3svh, 28px) clamp(12px, 2svh, 20px); gap: clamp(6px, 1.2svh, 12px); }
+  .title { font-size: 13px; }
+  :root { --pw: clamp(104px, 20svh, 190px); }
+  .portrait { margin-top: 0; }
+  .caption { font-size: 10px; margin-top: 2px; }
+  .invite { font-size: 9.5px; max-width: 86vw; }
+  .status__msg { font-size: 10px; }
+}
+@media (max-width: 767px) and (max-height: 640px) {
+  :root { --pw: 96px; }
+}
+
+/* ── Reduced motion: od razu otwarte, tylko miękkie pojawienie ─ */
+@media (prefers-reduced-motion: reduce) {
+  .pad.is-shake, .code-dot { animation: none !important; }
+  .code-dot { transition: none; }
+}
