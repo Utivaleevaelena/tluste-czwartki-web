@@ -18,6 +18,8 @@
 }
 *, *::before, *::after { box-sizing: border-box; }
 html, body { margin: 0; background: var(--event-bg); color: var(--event-text); }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
 .event {
   position: relative; isolation: isolate; overflow: hidden; width: 100%;
