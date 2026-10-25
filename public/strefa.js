@@ -208,9 +208,11 @@
     el.status.textContent = kind === 'status' ? text : '';
     el.error.textContent = kind === 'error' ? text : '';
   }
+  let checkSeq = 0, lastKey = null;
   function setBusy(b) {
     busy = b;
-    btns.forEach((n) => { n.disabled = b; });
+    // podczas sprawdzania strzałka „usuń” zostaje aktywna: cofnięcie anuluje sprawdzanie
+    btns.forEach((n) => { n.disabled = b && n.dataset.action !== 'backspace'; });
     el.input.disabled = b;
     el.keypad.setAttribute('aria-busy', String(b));
   }
@@ -272,16 +274,29 @@
     say('error', MSG.error);
     shake();
     setTimeout(() => { if (!busy && !code) setState('idle'); }, 1600);
-    el.input.focus({ preventScroll: true });
+    // NIE ustawiamy fokusu w ukrytym polu: na telefonie wysuwało klawiaturę ekranową, która zasłaniała dolny rząd (w tym strzałkę).
+    // Użytkownik klawiatury wraca na ostatnio używany klawisz.
+    if (lastKey && lastKey.matches(':focus-visible')) lastKey.focus({ preventScroll: true });
+    else if (document.activeElement === el.input) el.input.blur();
+  }
+
+  // Cofnięcie w trakcie sprawdzania: odrzucamy odpowiedź serwera i zostajemy przy wpisywaniu.
+  function cancelCheck() {
+    checkSeq++;
+    setBusy(false);
+    say('status', '');
+    say('error', '');
+    setCode(code.slice(0, -1));
   }
 
   async function submit() {
     if (busy || code.length !== CODE_LENGTH) return; // mniej niż 4 cyfry: bez sprawdzania
-    const value = code;
+    const value = code, seq = ++checkSeq;
     say('status', MSG.checking);
     setState('checking');
     setBusy(true);
     const result = await verifyAccess(value);
+    if (seq !== checkSeq) return;            // użytkownik anulował strzałką
     if (!result.ok) return fail();
 
     setState('success');
@@ -302,7 +317,9 @@
   el.keypad.addEventListener('submit', (e) => { e.preventDefault(); submit(); });
   el.keypad.addEventListener('click', (e) => {
     const b = e.target.closest('button');
-    if (!b || busy || b.type === 'submit') return;
+    if (!b || b.type === 'submit') return;
+    if (busy) { if (b.dataset.action === 'backspace') cancelCheck(); return; }
+    lastKey = b;
     say('error', '');
     if (b.dataset.key !== undefined) setCode(code + b.dataset.key);
     else if (b.dataset.action === 'backspace') setCode(code.slice(0, -1));
@@ -312,6 +329,7 @@
 
   // Fizyczna klawiatura: cyfry, Backspace, Enter — gdy panel jest już odsłonięty.
   addEventListener('keydown', (e) => {
+    if (busy && live && e.key === 'Backspace') { e.preventDefault(); cancelCheck(); return; }
     if (busy || !live || e.metaKey || e.ctrlKey || e.altKey) return;
     const onInput = e.target === el.input;
     if (/^\d$/.test(e.key)) {
