@@ -39,6 +39,7 @@
     clearTimeout(timer);
     if (reduced()) { set('open'); title.focus({ preventScroll: true }); return; }
     set('opening');
+    curtainSound();
     timer = setTimeout(() => { set('open'); title.focus({ preventScroll: true }); }, OPEN_MS);
   }
   function close() {
@@ -46,8 +47,24 @@
     clearTimeout(timer);
     if (reduced()) { set('closed'); openBtn.focus({ preventScroll: true }); return; }
     set('closing');
+    curtainSound();
     timer = setTimeout(() => { set('closed'); openBtn.focus({ preventScroll: true }); }, CLOSE_MS);
     root.scrollIntoView?.({ block: 'start', behavior: 'smooth' });
+  }
+
+  /* ── Dźwięk (włączany ikoną w rogu; syntetyczny stuk przycisku + nagranie szelestu kurtyn) ── */
+  const snd = () => window.ClubSound;
+  const thunk = () => snd()?.thunk();
+  [openBtn, closeBtn].forEach((b) => {
+    b.addEventListener('pointerdown', thunk);
+    b.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') thunk(); });
+  });
+  let rustleTimers = [];
+  function curtainSound() {          // szelest narasta przy starcie ruchu kurtyn i cichnie, gdy się zatrzymują (~1.76 s)
+    if (reduced()) return;
+    rustleTimers.forEach(clearTimeout);
+    snd()?.rustle(.85);
+    rustleTimers = [setTimeout(() => snd()?.rustle(.6), 900), setTimeout(() => snd()?.rustle(.25), 1400), setTimeout(() => snd()?.rustle(0), 1750)];
   }
 
   // Wciśnięty wygląd przycisku zaraz po kliknięciu (0–120 ms), potem start animacji.

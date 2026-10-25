@@ -129,3 +129,15 @@ html { scroll-behavior: smooth; }
   .event__content, .event__portrait { animation: none; }
   .event__cta svg, .event__cta--link::after { transition: none; }
 }
+
+/* ── Ikona dźwięku (wszystkie bloki) ───────────────────────── */
+.sound-toggle {
+  position: fixed; z-index: 30; top: max(12px, env(safe-area-inset-top)); right: max(12px, env(safe-area-inset-right));
+  width: 44px; height: 44px; display: grid; place-items: center; padding: 0; cursor: pointer;
+  color: #fcf4e6; background: rgb(17 3 3 / .55); border: 1px solid rgb(251 213 125 / .45); border-radius: 50%;
+  -webkit-tap-highlight-color: transparent; transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+}
+.sound-toggle svg { width: 22px; height: 22px; }
+.sound-toggle:hover { background: rgb(60 6 2 / .75); border-color: #fbd57d; }
+.sound-toggle[aria-pressed="true"] { color: #fbd57d; border-color: #fbd57d; }
+.sound-toggle:focus-visible { outline: 2px solid #fbd57d; outline-offset: 3px; }

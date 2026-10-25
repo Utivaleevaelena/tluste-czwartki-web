@@ -30,7 +30,7 @@
 
     // szelest kurtyny: długie nagranie (114 s, równa faktura) w pętli; głośność podąża za prędkością ruchu kurtyny
     rustleGain = ctx.createGain(); rustleGain.gain.value = 0; rustleGain.connect(master);
-    fetch('assets/sounds/curtain-rustle.mp3').then((r) => r.arrayBuffer()).then((ab) => new Promise((ok, no) => ctx.decodeAudioData(ab, ok, no)))
+    fetch('/assets/sounds/curtain-rustle.mp3').then((r) => r.arrayBuffer()).then((ab) => new Promise((ok, no) => ctx.decodeAudioData(ab, ok, no)))
       .then((buf) => {
         const ch = buf.getChannelData(0), bins = new Uint32Array(1001); let sum = 0, n = 0, max = 0;
         for (let i = 0; i < ch.length; i += 7) { const v = Math.abs(ch[i]); sum += v * v; n++; if (v > max) max = v; }
