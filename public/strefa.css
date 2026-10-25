@@ -81,6 +81,25 @@ body { margin: 0; background: #0d0505; color: var(--club-ivory); }
 .curtain-half--left img { left: 0; }
 .curtain-half--right img { left: -100%; }
 
+/* Przyciemnienie zasuniętej kurtyny + duże logo pośrodku. Logo jest „przecięte” razem z kurtyną:
+   każda połowa pokazuje swoją część i odjeżdża na bok — bez zmian przezroczystości. */
+.curtain-shade {
+  position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse 62vw 70svh at var(--seam), rgb(8 2 2 / .78), rgb(8 2 2 / .5) 62%, rgb(8 2 2 / .42) 100%);
+}
+.curtain-half--left { --seam: 100% 50%; }
+.curtain-half--right { --seam: 0% 50%; }
+.curtain-logo {
+  --lw: min(64vw, 920px);
+  position: absolute; top: 50%; width: var(--lw); aspect-ratio: 1928 / 815; translate: 0 -50%; pointer-events: none;
+  background: #fcf4e6;
+  -webkit-mask: url("assets/logo.png") center / contain no-repeat; mask: url("assets/logo.png") center / contain no-repeat;
+  filter: drop-shadow(0 4px 28px rgb(0 0 0 / .55));
+}
+.curtain-half--left .curtain-logo { left: calc(100% - var(--lw) / 2); }
+.curtain-half--right .curtain-logo { left: calc(var(--lw) / -2); }
+
+
 /* ── Kolumna: tytuł → portret → kod → link ─────────────────── */
 .column {
   /* bez translate/z-index: kolumna nie tworzy kontekstu, więc tytuł może leżeć nad zasuniętą kurtyną */
