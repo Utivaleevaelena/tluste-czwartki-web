@@ -4,21 +4,124 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
-  <title>RELACJA ZE SPOTKANIA — Tłuste Czwartki</title>
+  <title>Fotogaleria — Tłuste Czwartki</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,800&family=Manrope:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../stub.css">
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,700;6..96,800&family=Manrope:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="preload" as="image" href="assets/scene/background.jpg">
+  <link rel="preload" as="image" href="assets/scene/attendant-tray.png">
+  <link rel="stylesheet" href="gallery.css">
 </head>
 <body>
-  <main class="stub">
-    <p class="stub__eyebrow">RELACJA ZE SPOTKANIA</p>
-    <h1 class="stub__title">JAK ZOSTAĆ INWESTOREM WE WŁASNEJ FIRMIE?</h1>
-    <p class="stub__text">Ta część serwisu jest w przygotowaniu.</p>
-    <a class="stub__back" href="../">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M10 7l-5 5 5 5"/></svg>
-      <span>POWRÓT DO SPOTKANIA</span>
-    </a>
-  </main>
+
+<!--
+  Blok „fotogaleria po rozsunięciu kurtyn” (wielokrotnego użytku).
+  Następne wydarzenie: podmień 8 zdjęć w assets/gallery/ (i alt-y poniżej), ewentualnie warstwy sceny w assets/scene/.
+  Link do pobrania: atrybut data-download-href poniżej (pusty = przycisk pokazuje stan „wkrótce”).
+-->
+<section class="gal" id="gal" data-gal data-state="closed" data-download-href="" aria-labelledby="gal-title">
+  <a class="gal__back" href="../"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M10 7l-5 5 5 5"/></svg><span>SPOTKANIE</span></a>
+
+  <div class="gal__stage" data-stage>
+    <div class="gal__scene" aria-hidden="true">
+      <img class="gal__layer gal__bg" src="assets/scene/background.jpg" alt="" width="1672" height="941" decoding="async" fetchpriority="high">
+    </div>
+
+    <!-- Panel galerii (widoczny po otwarciu) -->
+    <div class="gal__panel" id="gal-panel" data-panel inert>
+      <header class="gal__head">
+        <p class="gal__eyebrow"><span>RELACJA ZE SPOTKANIA</span></p>
+        <h2 class="gal__title" id="gal-title" tabindex="-1" data-title>FOTOGALERIA</h2>
+        <p class="gal__meta">22.10.2026 <i aria-hidden="true"></i> TŁUSTA KACZKA <i aria-hidden="true"></i> GDYNIA ORŁOWO</p>
+      </header>
+
+      <ul class="gal__grid" role="list">
+          <li class="gal__item" style="--i:0">
+            <button class="gal__thumb" type="button" data-index="0" aria-label="Powiększ zdjęcie 1 z 8: Rozmowa uczestników spotkania w restauracji">
+              <img src="assets/gallery/gallery-01.jpg" alt="Rozmowa uczestników spotkania w restauracji" width="1400" height="1050" decoding="async" style="object-position:50% 40%">
+            </button>
+          </li>
+          <li class="gal__item" style="--i:1">
+            <button class="gal__thumb" type="button" data-index="1" aria-label="Powiększ zdjęcie 2 z 8: Uczestnicy spotkania pozujący do zdjęcia">
+              <img src="assets/gallery/gallery-02.jpg" alt="Uczestnicy spotkania pozujący do zdjęcia" width="1050" height="1400" decoding="async" style="object-position:50% 30%">
+            </button>
+          </li>
+          <li class="gal__item" style="--i:2">
+            <button class="gal__thumb" type="button" data-index="2" aria-label="Powiększ zdjęcie 3 z 8: Rozmowa uczestników podczas wieczoru biznesowego">
+              <img src="assets/gallery/gallery-03.jpg" alt="Rozmowa uczestników podczas wieczoru biznesowego" width="1050" height="1400" decoding="async" style="object-position:50% 30%">
+            </button>
+          </li>
+          <li class="gal__item" style="--i:3">
+            <button class="gal__thumb" type="button" data-index="3" aria-label="Powiększ zdjęcie 4 z 8: Prowadzący i gość przed rozpoczęciem rozmowy">
+              <img src="assets/gallery/gallery-04.jpg" alt="Prowadzący i gość przed rozpoczęciem rozmowy" width="1400" height="933" decoding="async" style="object-position:50% 35%">
+            </button>
+          </li>
+          <li class="gal__item" style="--i:4">
+            <button class="gal__thumb" type="button" data-index="4" aria-label="Powiększ zdjęcie 5 z 8: Uczestnicy słuchający wystąpienia">
+              <img src="assets/gallery/gallery-05.jpg" alt="Uczestnicy słuchający wystąpienia" width="933" height="1400" decoding="async" loading="lazy" style="object-position:50% 28%">
+            </button>
+          </li>
+          <li class="gal__item" style="--i:5">
+            <button class="gal__thumb" type="button" data-index="5" aria-label="Powiększ zdjęcie 6 z 8: Uczestnik spotkania podczas dyskusji">
+              <img src="assets/gallery/gallery-06.jpg" alt="Uczestnik spotkania podczas dyskusji" width="933" height="1400" decoding="async" loading="lazy" style="object-position:50% 28%">
+            </button>
+          </li>
+          <li class="gal__item" style="--i:6">
+            <button class="gal__thumb" type="button" data-index="6" aria-label="Powiększ zdjęcie 7 z 8: Rozmowa z gościem wieczoru">
+              <img src="assets/gallery/gallery-07.jpg" alt="Rozmowa z gościem wieczoru" width="1400" height="933" decoding="async" loading="lazy" style="object-position:50% 35%">
+            </button>
+          </li>
+          <li class="gal__item" style="--i:7">
+            <button class="gal__thumb" type="button" data-index="7" aria-label="Powiększ zdjęcie 8 z 8: Gość spotkania podczas rozmowy z uczestnikami">
+              <img src="assets/gallery/gallery-08.jpg" alt="Gość spotkania podczas rozmowy z uczestnikami" width="933" height="1400" decoding="async" loading="lazy" style="object-position:50% 28%">
+            </button>
+          </li>
+      </ul>
+
+      <div class="gal__foot">
+        <a class="gal__download" data-download aria-disabled="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg>
+          <span>POBIERZ ZDJĘCIA</span>
+        </a>
+        <p class="gal__note" data-download-note>Link do pobrania zdjęć będzie dostępny wkrótce.</p>
+        <button class="gal__close" type="button" data-close>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+          <span>ZAMKNIJ GALERIĘ</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Kurtyny i obsługa (znikają po otwarciu) -->
+    <div class="gal__scene gal__scene--front" aria-hidden="true">
+      <img class="gal__layer gal__curtain gal__curtain--left" src="assets/scene/curtain-left.png" alt="" width="1672" height="941" decoding="async" fetchpriority="high">
+      <img class="gal__layer gal__curtain gal__curtain--right" src="assets/scene/curtain-right.png" alt="" width="1672" height="941" decoding="async" fetchpriority="high">
+      <div class="gal__attendant">
+        <img class="gal__layer" src="assets/scene/attendant-tray.png" alt="" width="1672" height="941" decoding="async" fetchpriority="high">
+      </div>
+    </div>
+    <!-- Przycisk leży na tacy, ale jest prawdziwym <button> poza warstwami aria-hidden -->
+    <div class="gal__scene gal__scene--btn">
+      <div class="gal__attendant gal__attendant--btn">
+        <button class="gal__open" type="button" aria-expanded="false" aria-controls="gal-panel" data-open>
+          <span>ZOBACZ ZDJĘCIA</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M14 7l5 5-5 5"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Powiększenie zdjęcia -->
+  <dialog class="gal__lightbox" data-lightbox aria-label="Powiększone zdjęcie">
+    <figure>
+      <img alt="" data-lb-img>
+      <figcaption data-lb-cap></figcaption>
+    </figure>
+    <button class="gal__lb-btn gal__lb-btn--prev" type="button" aria-label="Poprzednie zdjęcie" data-lb-prev><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <button class="gal__lb-btn gal__lb-btn--next" type="button" aria-label="Następne zdjęcie" data-lb-next><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+    <button class="gal__lb-btn gal__lb-btn--close" type="button" aria-label="Zamknij powiększenie" data-lb-close><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  </dialog>
+</section>
+
+<script src="gallery.js" defer></script>
 </body>
 </html>

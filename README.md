@@ -50,3 +50,10 @@ Bez nich endpoint odpowiada 503 i nic nie zapisuje (formularz pokaże błąd).
 
 `private-content/index.html` + `event.css` + `assets/events/<wydarzenie>/{background.jpg,speaker.png}`. Pliki są serwowane przez `api/private.js` tylko z ważną sesją.
 Na następne wydarzenie: podmień teksty/datę w `index.html` (sekcja `.event`, komentarz na górze), adresy `href` przycisków (`#relacja`, `#materialy` — tymczasowe) i oba obrazy.
+
+## Фотогалерея `/private/relacja/` (Fotogaleria)
+
+`private-content/relacja/{index.html,gallery.css,gallery.js}` + `assets/scene/*` (фон, шторы, сотрудник) + `assets/gallery/gallery-01..08.jpg`.
+Состояния `closed → opening → open → closing`; анимируются только `transform`/`opacity`; reduced-motion — мгновенная смена.
+**Ссылка «POBIERZ ZDJĘCIA»:** атрибут `data-download-href=""` у `<section class="gal">` в `index.html`. Пока пусто — кнопка в состоянии «wkrótce».
+**Фото следующего события:** замените 8 файлов в `assets/gallery/` и `alt` в `index.html`.
