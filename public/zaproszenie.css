@@ -60,9 +60,17 @@
 
 /* Ręka: 1672×941 → skala .7 względem referencji, kciuk dociska prawy górny róg karty */
 .inv__hand {
-  position: absolute; z-index: 2; left: 33.3cqw; top: -23cqw; width: 179.4cqw; height: auto; max-width: none;
+  position: absolute; left: 33.3cqw; top: -23cqw; width: 179.4cqw; height: auto; max-width: none;
   pointer-events: none; user-select: none; -webkit-user-drag: none; filter: drop-shadow(0 1.2cqw 1.6cqw rgb(0 0 0 / .45));
 }
+/* Chwyt: cała ręka leży ZA kartą (palce za papierem), a na wierzch wraca tylko kciuk i palec wskazujący —
+   przycięte warstwą clip-path (współrzędne w % płótna ręki 1672×941). */
+.inv__hand--back { z-index: -1; }
+.inv__hand--front {
+  z-index: 3;
+  clip-path: polygon(21.5% 10.5%, 58.5% 10.5%, 58.5% 40%, 43% 36.5%, 35.8% 35%, 31% 31.5%, 29.5% 28%, 22% 24.5%);
+}
+
 
 /* Tablet */
 @media (max-width: 1023px) {
