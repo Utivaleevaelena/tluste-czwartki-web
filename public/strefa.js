@@ -225,9 +225,10 @@
 
   /* Wciśnięty klawisz = gotowy PNG z buttons/pressed (bez transform/scale). */
   const press = (btn, on) => {
-    if (!btn) return;
+    if (!btn || (on && btn.disabled)) return;                 // zablokowany klawisz (busy) nie dźwięczy i nie „wciska się”
     if (on && !btn.classList.contains('is-pressed')) {
-      if (btn.matches('[data-submit]')) window.ClubSound?.thunk(); else window.ClubSound?.key();
+      // ✓ i OTWÓRZ robią to samo (wysyłają kod), więc brzmią tak samo
+      if (btn.matches('[data-submit], [data-action="confirm"]')) window.ClubSound?.thunk(); else window.ClubSound?.key();
     }
     btn.classList.toggle('is-pressed', on);
   };
@@ -274,6 +275,7 @@
     say('error', MSG.error);
     shake();
     setTimeout(() => { if (!busy && !code) setState('idle'); }, 1600);
+    window.ClubSound?.error();
     // NIE ustawiamy fokusu w ukrytym polu: na telefonie wysuwało klawiaturę ekranową, która zasłaniała dolny rząd (w tym strzałkę).
     // Użytkownik klawiatury wraca na ostatnio używany klawisz.
     if (lastKey && lastKey.matches(':focus-visible')) lastKey.focus({ preventScroll: true });
@@ -300,6 +302,7 @@
     if (!result.ok) return fail();
 
     setState('success');
+    window.ClubSound?.success();
     say('status', MSG.success);
     stage.classList.add('is-success');
     holdLidClosed();
@@ -328,7 +331,15 @@
   el.input.addEventListener('input', () => { say('error', ''); setCode(el.input.value); });
 
   // Fizyczna klawiatura: cyfry, Backspace, Enter — gdy panel jest już odsłonięty.
+  // Nie przechwytujemy pisania w formularzach, selectach i oknach dialogowych (np. formularz zgłoszenia).
+  const typingElsewhere = (e) => {
+    if (document.querySelector('dialog[open]')) return true;
+    const t = e.target;
+    return !!(t && t !== el.input && t.closest?.('dialog, input, textarea, select, [contenteditable]'));
+  };
   addEventListener('keydown', (e) => {
+    if (typingElsewhere(e)) return;
+    if (e.repeat && e.key !== 'Backspace') return;           // przytrzymana cyfra/Enter nie wypełnia całego kodu
     if (busy && live && e.key === 'Backspace') { e.preventDefault(); cancelCheck(); return; }
     if (busy || !live || e.metaKey || e.ctrlKey || e.altKey) return;
     const onInput = e.target === el.input;
@@ -343,6 +354,7 @@
     }
   });
   addEventListener('keyup', (e) => {
+    if (typingElsewhere(e)) return;
     if (/^\d$/.test(e.key)) press(keyBtn(e.key), false);
     else if (e.key === 'Backspace') press(keyBtn('backspace'), false);
     else if (e.key === 'Enter') press(el.keypad.querySelector('[data-submit]'), false);

@@ -39,14 +39,16 @@
     return res;
   }
 
+  const snd = () => window.ClubSound;
   function open() {
+    snd()?.key();
     opener = document.activeElement;
     status.textContent = ''; errBox.textContent = '';
     if (!dlg.open) dlg.showModal();
     document.documentElement.style.overflow = 'hidden';
     field('name').focus();
   }
-  function close() { if (dlg.open) dlg.close(); }
+  function close() { if (dlg.open) { snd()?.key(); dlg.close(); } }
   dlg.addEventListener('close', () => {
     document.documentElement.style.overflow = '';
     if (opener && opener.focus) opener.focus();
@@ -70,6 +72,7 @@
     const firstBad = Object.keys(res).find((n) => !res[n]);
     if (firstBad) { field(firstBad).focus(); return; }
 
+    snd()?.thunk();
     submit.disabled = true;
     status.textContent = MSG.sending;
     try {
@@ -83,6 +86,7 @@
       });
       const data = await r.json().catch(() => ({}));
       if (r.ok && data.ok) {
+        snd()?.success();
         dlg.classList.add('is-done');
         status.textContent = MSG.ok;
         form.reset(); tried = false;

@@ -167,7 +167,7 @@ body { margin: 0; background: #0d0505; color: var(--club-ivory); }
 /* ── Podpis i status ───────────────────────────────────────── */
 .caption {
   margin: clamp(6px, 1.6svh, 18px) 0 0;
-  font: 500 clamp(10px, .76vw, 13px) / 1.2 var(--sans); letter-spacing: .3em; padding-left: .3em;
+  font: 500 clamp(11px, .8vw, 14px) / 1.2 var(--sans); letter-spacing: .3em; padding-left: .3em;
   color: var(--club-ivory); text-align: center;
 }
 .status {
@@ -176,15 +176,15 @@ body { margin: 0; background: #0d0505; color: var(--club-ivory); }
 }
 .status__msg {
   grid-area: 1 / 1; margin: 0; text-align: center;
-  font: 500 clamp(10px, .72vw, 12px) / 1.35 var(--sans); letter-spacing: .22em; text-transform: uppercase;
+  font: 500 clamp(11px, .8vw, 13px) / 1.35 var(--sans); letter-spacing: .22em; text-transform: uppercase;
   color: var(--club-ivory-shadow);
 }
-.status__msg--error { color: #e59a85; }
+.status__msg--error { color: #f0a590; font-size: clamp(12px, .9vw, 14px); font-weight: 700; }
 .status__msg:empty { display: none; }
 
 .invite {
-  margin-top: auto; padding-bottom: 5px; max-width: 92vw; text-wrap: balance;
-  font: 500 clamp(9.5px, .7vw, 12px) / 1.3 var(--sans); letter-spacing: .24em;
+  margin-top: auto; padding-bottom: 5px; max-width: min(92vw, 360px); text-wrap: balance;
+  font: 500 clamp(11px, .8vw, 13px) / 1.4 var(--sans); letter-spacing: .2em;
   color: var(--club-ivory); text-decoration: none; text-align: center;
   border-bottom: 1px solid rgb(243 226 200 / .75);
   transition: opacity var(--club-transition-ui) ease, border-color var(--club-transition-ui) ease;
@@ -262,9 +262,10 @@ body { margin: 0; background: #0d0505; color: var(--club-ivory); }
   .title { font-size: 13px; }
   :root { --pw: clamp(104px, 20svh, 190px); }
   .portrait { margin-top: 0; }
-  .caption { font-size: 10px; margin-top: 2px; }
-  .invite { font-size: 9.5px; max-width: 86vw; }
-  .status__msg { font-size: 10px; }
+  .caption { font-size: 11px; margin-top: 2px; }
+  .invite { font-size: 11px; max-width: 86vw; }
+  .status__msg { font-size: 11px; }
+  .status__msg--error { font-size: 12px; }
 }
 @media (max-width: 767px) and (max-height: 640px) {
   :root { --pw: 96px; }
@@ -291,3 +292,23 @@ body { margin: 0; background: #0d0505; color: var(--club-ivory); }
 /* zasunięta kurtyna reaguje na klik/dotyk */
 .stage.is-closed { cursor: pointer; }
 .stage.is-closed .column > * { cursor: pointer; }
+
+/* ── Telefon poziomo: cały kod mieści się w 100svh (scena jest przypięta) ── */
+@media (orientation: landscape) and (max-height: 500px) {
+  :root { --vis: clamp(34px, calc((100svh - 205px) / 4.96), 54px); --gap: 8px; }
+  .portrait, .caption { display: none; }
+  .column { padding-block: 12px 10px; gap: 6px; }
+  .head { gap: 6px; }
+  .title { font-size: 12px; }
+  .keypad { row-gap: 6px; }
+  .status { min-height: 1.3em; }
+}
+
+/* ── Ikona dźwięku: czytelniejsza podkładka, znika pod otwartym oknem; jednorazowa podpowiedź ── */
+.sound-toggle { background: rgb(17 3 3 / .72); }
+body:has(dialog[open]) .sound-toggle { opacity: 0; pointer-events: none; }
+.sound-hint {
+  position: fixed; z-index: 30; top: calc(max(12px, env(safe-area-inset-top)) + 8px); right: calc(max(12px, env(safe-area-inset-right)) + 54px);
+  max-width: min(60vw, 260px); padding: 8px 12px; border: 1px solid rgb(251 213 125 / .45); border-radius: 6px; background: rgb(17 3 3 / .85);
+  font: 500 11px / 1.35 var(--sans, "Montserrat", sans-serif); letter-spacing: .08em; color: #fcf4e6; pointer-events: none;
+}

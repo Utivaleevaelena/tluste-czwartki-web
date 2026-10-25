@@ -28,7 +28,7 @@
     master.connect(comp); comp.connect(ctx.destination);
     noiseBuf = makeNoise(2);
 
-    // szelest kurtyny: długie nagranie (114 s, równa faktura) w pętli; głośność podąża za prędkością ruchu kurtyny
+    // szelest kurtyny: długie nagranie (114 s) — w pętli gra fragment 4–40 s (równa faktura, bez słyszalnego powtarzania); głośność podąża za prędkością ruchu kurtyny
     rustleGain = ctx.createGain(); rustleGain.gain.value = 0; rustleGain.connect(master);
     fetch('/assets/sounds/curtain-rustle.mp3').then((r) => r.arrayBuffer()).then((ab) => new Promise((ok, no) => ctx.decodeAudioData(ab, ok, no)))
       .then((buf) => {
@@ -72,6 +72,22 @@
       tone(2100 * r, 1500 * r, .07, .09, 'triangle');
       tone(190 * r, 120 * r, .06, .22);
     },
+    // błąd kodu: krótki, głuchy podwójny „bzz” (niskie częstotliwości)
+    error() {
+      if (!enabled || !ctx) return;
+      tone(150, 110, .16, .3, 'sawtooth');
+      tone(150, 100, .2, .3, 'sawtooth', .2);
+      burst(400, .8, .12, .18);
+    },
+    // sukces: miękki szczęk zamka + ciepły dzwonek
+    success() {
+      if (!enabled || !ctx) return;
+      burst(2600, 1.2, .05, .4);
+      tone(220, 130, .12, .3, 'sine', .02);
+      tone(880, 880, .7, .12, 'sine', .14);
+      tone(1318.5, 1318.5, .9, .09, 'sine', .22);
+      tone(1760, 1760, 1.1, .05, 'sine', .3);
+    },
     // cięższy stuk przycisku OTWÓRZ / DOŁĄCZ
     thunk() {
       if (!enabled || !ctx) return;
@@ -113,10 +129,19 @@
   paint();
   document.body.appendChild(btn);
 
-  // jeśli dźwięk był włączony wcześniej: kontekst audio ruszy dopiero po pierwszym geście
+  // jeśli dźwięk był włączony wcześniej: kontekst audio ruszy dopiero po pierwszym geście (polityka autoodtwarzania).
+  // Przewijanie kółkiem NIE jest takim gestem — dlatego jednorazowa podpowiedź przy ikonie.
   if (enabled) {
-    const wake = () => { init(); ctx && ctx.resume(); removeEventListener('pointerdown', wake); removeEventListener('keydown', wake); };
-    addEventListener('pointerdown', wake); addEventListener('keydown', wake);
+    const evs = ['pointerdown', 'touchstart', 'click', 'keydown'];
+    const hint = document.createElement('div');
+    hint.className = 'sound-hint'; hint.setAttribute('role', 'status'); hint.textContent = 'Dotknij ekranu, aby uruchomić dźwięk';
+    document.body.appendChild(hint);
+    const wake = () => {
+      init(); ctx && ctx.resume();
+      hint.remove(); evs.forEach((t) => removeEventListener(t, wake, true));
+    };
+    evs.forEach((t) => addEventListener(t, wake, { capture: true, passive: true }));
+    setTimeout(() => hint.remove(), 7000);
   }
   document.addEventListener('visibilitychange', () => { if (!ctx) return; document.hidden ? ctx.suspend() : enabled && ctx.resume(); });
 })();

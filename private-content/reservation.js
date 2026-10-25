@@ -80,6 +80,7 @@
     e.preventDefault(); tried = true; errBox.textContent = '';
     const ok = check(), bad = Object.keys(ok).find((n) => !ok[n]);
     if (bad) { field(bad).focus(); return; }
+    window.ClubSound?.thunk();
     submit.disabled = true; status.textContent = CONTENT.ui.sending;
     try {
       const r = await fetch('/api/apply', {
@@ -88,6 +89,7 @@
       });
       const data = await r.json().catch(() => ({}));
       if (r.ok && data.ok) {
+        window.ClubSound?.success();
         dlg.classList.add('is-done'); status.textContent = CONTENT.ui.ok; form.reset(); seats = 1; paintSeats(); tried = false;
         dlg.querySelector('[data-rsv-close]').focus(); return;
       }
