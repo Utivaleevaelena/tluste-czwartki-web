@@ -3,7 +3,7 @@
 (() => {
   'use strict';
   const KEY = 'club-sound';
-  let ctx = null, master = null, noiseBuf = null, curtainBuf = null, lastRustle = 0;
+  let ctx = null, master = null, noiseBuf = null, rustleGain = null, rustleSrc = null, curtainNorm = 1, lastLevel = 0;
   let enabled = false;
   try { enabled = localStorage.getItem(KEY) === '1'; } catch {}
 
@@ -28,9 +28,23 @@
     master.connect(comp); comp.connect(ctx.destination);
     noiseBuf = makeNoise(2);
 
-    // szelest kurtyny: prawdziwa próbka assets/sounds/curtain.mp3 (~0.8 s), ładowana przy włączeniu dźwięku
-    fetch('assets/sounds/curtain.mp3').then((r) => r.arrayBuffer()).then((ab) => new Promise((ok, no) => ctx.decodeAudioData(ab, ok, no)))
-      .then((buf) => { curtainBuf = buf; }).catch(() => {});
+    // szelest kurtyny: długie nagranie (114 s, równa faktura) w pętli; głośność podąża za prędkością ruchu kurtyny
+    rustleGain = ctx.createGain(); rustleGain.gain.value = 0; rustleGain.connect(master);
+    fetch('assets/sounds/curtain-rustle.mp3').then((r) => r.arrayBuffer()).then((ab) => new Promise((ok, no) => ctx.decodeAudioData(ab, ok, no)))
+      .then((buf) => {
+        const ch = buf.getChannelData(0), bins = new Uint32Array(1001); let sum = 0, n = 0, max = 0;
+        for (let i = 0; i < ch.length; i += 7) { const v = Math.abs(ch[i]); sum += v * v; n++; if (v > max) max = v; }
+        for (let i = 0; i < ch.length; i += 7) bins[Math.min(1000, Math.floor(Math.abs(ch[i]) / (max || 1) * 1000))]++;
+        let acc = 0, p999 = max; // 99.9. percentyl — pojedyncze „strzały” nie mogą wyznaczać głośności całości
+        for (let k = 0; k <= 1000; k++) { acc += bins[k]; if (acc >= n * .999) { p999 = (k / 1000) * max; break; } }
+        const rms = Math.sqrt(sum / n) || .004;
+        curtainNorm = Math.min(.12 / rms, .5 / (p999 || .05));   // nagranie jest bardzo ciche — wyrównujemy głośność
+        const src = ctx.createBufferSource(); src.buffer = buf; src.loop = true;
+        src.loopStart = 4; src.loopEnd = Math.min(buf.duration, 40);
+        src.connect(rustleGain); src.start(0, 4 + Math.random() * 30);
+        rustleSrc = src;
+        api.rustle(lastLevel);
+      }).catch(() => {});
   }
 
   const t0 = () => ctx.currentTime;
@@ -65,22 +79,19 @@
       tone(140, 70, .16, .38);
       tone(2300, 1700, .09, .07, 'triangle', .004);
     },
-    // level 0..1 — prędkość ruchu kurtyny. Próbka (~0.8 s, szczyt po ~0.4 s) startuje, gdy kurtyna rusza,
-    // i jest powtarzana co ~0.6 s, dopóki trwa wyraźny ruch; głośność zależy od prędkości.
+    // level 0..1 — prędkość ruchu kurtyny: szelest narasta, gdy kurtyna jedzie, i cichnie, gdy staje
     rustle(level) {
-      if (!enabled || !ctx || !curtainBuf || level < .1) return;
-      const now = ctx.currentTime;
-      if (now - lastRustle < .6) return;
-      lastRustle = now;
-      const s = ctx.createBufferSource(), g = ctx.createGain();
-      s.buffer = curtainBuf; s.playbackRate.value = .96 + Math.random() * .08;
-      g.gain.value = Math.min(1, .45 + level * .7) * 2.6; // nagranie jest ciche (szczyt ≈ 0.17)
-      s.connect(g); g.connect(master); s.start();
+      lastLevel = level;
+      if (!ctx || !rustleGain) return;
+      const l = Math.max(0, Math.min(1, level * 1.3));
+      const target = enabled ? Math.pow(l, 1.2) * curtainNorm : 0;
+      rustleGain.gain.setTargetAtTime(target, ctx.currentTime, l > 0 ? .07 : .22);
     },
     toggle(v) {
       enabled = v === undefined ? !enabled : !!v;
       try { localStorage.setItem(KEY, enabled ? '1' : '0'); } catch {}
       if (enabled) { init(); ctx && ctx.resume(); }
+      else if (rustleGain) rustleGain.gain.setTargetAtTime(0, ctx.currentTime, .03);
       paint();
       if (enabled && ctx) api.key(); // potwierdzenie włączenia
     },
