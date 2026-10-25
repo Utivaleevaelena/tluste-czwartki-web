@@ -52,13 +52,17 @@
   function curtainLoop(now) {
     curtainRaf = 0;
     const dt = Math.min(64, now - (curtainLast || now)); curtainLast = now;
+    const prev = slideNow;
     slideNow += (slideTarget - slideNow) * (1 - Math.exp(-dt / 260));
+    // szelest kurtyny ~ prędkość jej ruchu
+    window.ClubSound?.rustle(Math.abs(slideNow - prev) / Math.max(dt, 8) * 900);
     if (Math.abs(slideTarget - slideNow) < .0004) slideNow = slideTarget;
     const x = (slideNow * (100 - restPct)).toFixed(3); // połowy zatrzymują się przy krawędziach kadru
+    stage.style.setProperty('--logo-o', Math.max(0, 1 - slideNow * 4).toFixed(3)); // logo znika, gdy kurtyna ruszy — nie zostaje na brzegach
     el.left.style.transform = `translate3d(${-x}%,0,0)`;
     el.right.style.transform = `translate3d(${x}%,0,0)`;
     if (slideNow !== slideTarget) curtainRaf = requestAnimationFrame(curtainLoop);
-    else curtainLast = 0;
+    else { curtainLast = 0; window.ClubSound?.rustle(0); }
   }
   function kickCurtain() { if (!curtainRaf) curtainRaf = requestAnimationFrame(curtainLoop); }
 
@@ -196,7 +200,13 @@
   }
 
   /* Wciśnięty klawisz = gotowy PNG z buttons/pressed (bez transform/scale). */
-  const press = (btn, on) => btn && btn.classList.toggle('is-pressed', on);
+  const press = (btn, on) => {
+    if (!btn) return;
+    if (on && !btn.classList.contains('is-pressed')) {
+      if (btn.matches('[data-submit]')) window.ClubSound?.thunk(); else window.ClubSound?.key();
+    }
+    btn.classList.toggle('is-pressed', on);
+  };
   btns.forEach((btn) => {
     btn.addEventListener('pointerdown', () => press(btn, true));
     ['pointerup', 'pointercancel', 'pointerleave'].forEach((t) => btn.addEventListener(t, () => press(btn, false)));

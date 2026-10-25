@@ -56,7 +56,10 @@
   now = target = progress(); pose(now);
 
   /* ── Przycisk DOŁĄCZ: wciśnięty PNG + zdarzenie dla formularza zgłoszeń ── */
-  const press = (on) => join.classList.toggle('is-pressed', on);
+  const press = (on) => {
+    if (on && !join.classList.contains('is-pressed')) window.ClubSound?.thunk();
+    join.classList.toggle('is-pressed', on);
+  };
   join.addEventListener('pointerdown', () => press(true));
   ['pointerup', 'pointercancel', 'pointerleave', 'blur'].forEach((t) => join.addEventListener(t, () => press(false)));
   join.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') press(true); });
