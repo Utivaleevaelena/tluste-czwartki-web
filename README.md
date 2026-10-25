@@ -58,7 +58,7 @@ Na następne wydarzenie: podmień teksty/datę w `index.html` (sekcja `.event`, 
 **Ссылка «POBIERZ ZDJĘCIA»:** атрибут `data-download-href=""` у `<section class="gal">`. Пока пусто — кнопка в состоянии «wkrótce».
 **Фото следующего события:** замените 8 файлов в `assets/gallery-reveal/photos/` и `alt` в `index.html`.
 
-## Блок 3: ближайшее спотканя — кнопка «REZERWUJ MIEJSCE» (`#rezerwacja` на `/private/`)
+## Блок 3: ближайшая встреча — кнопка «REZERWUJ MIEJSCE» (`#rezerwacja` на `/private/`)
 
 Фронтенд: секция `.tb` и `<dialog class="rsv">` в `private-content/index.html`, `reservation.css`, `reservation.js` (данные события и тексты — объект `CONTENT` в начале `reservation.js`), ассеты `private-content/assets/tickets/` (фон `interior.jpg`, портрет `speaker.png`).
 Кнопка открывает окно: имя и фамилия, фирма (необязательно), телефон, e-mail, число мест (1–5), согласие RODO. Отправка: `POST /api/apply` с `type: "reservation"`; данные события дописывает сервер.
