@@ -5,6 +5,7 @@
   "rewrites": [
     { "source": "/api/members/verify", "destination": "/api/verify" },
     { "source": "/private", "destination": "/api/private" },
+    { "source": "/private/", "destination": "/api/private" },
     { "source": "/private/:path*", "destination": "/api/private?p=:path*" }
   ],
   "headers": [
