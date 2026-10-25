@@ -74,12 +74,34 @@
     kickCurtain();
     live = slideTarget >= .6; // штора уже открыла замок
     el.keypad.style.pointerEvents = live ? '' : 'none';
+    stage.classList.toggle('is-closed', p < .6 && !reduced);
 
     if (p >= .85 && !firstBlinkDone) { firstBlinkDone = true; blink(); }
     if (p < .6) firstBlinkDone = false;
     tracking = p >= .85 && !reduced;
     if (p >= .9) scheduleBlink(); else clearTimeout(blinkTimer), (blinkTimer = 0);
   }
+
+  /* ── Klik / dotyk w zasuniętą kurtynę ją otwiera: płynnie dociągamy przewinięcie do końca animacji ── */
+  let autoRaf = 0;
+  function cancelAuto() { if (autoRaf) { cancelAnimationFrame(autoRaf); autoRaf = 0; } }
+  function openCurtain() {
+    if (reduced || autoRaf) return;
+    const from = scrollY, to = zone.getBoundingClientRect().top + scrollY + animSpan();
+    if (to - from < 4) return;
+    const dur = 2600, t0 = performance.now();
+    const step = (now) => {
+      const t = clamp((now - t0) / dur);
+      scrollTo(0, from + (to - from) * ease(t));
+      autoRaf = t < 1 ? requestAnimationFrame(step) : 0;
+    };
+    autoRaf = requestAnimationFrame(step);
+  }
+  ['wheel', 'touchstart', 'keydown'].forEach((t) => addEventListener(t, cancelAuto, { passive: true }));
+  stage.addEventListener('click', (e) => {
+    if (progress >= .6 || e.target.closest('a, button, input, label')) return;
+    openCurtain();
+  });
 
   let ticking = false;
   function onScroll() {

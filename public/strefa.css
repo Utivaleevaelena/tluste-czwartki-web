@@ -287,3 +287,7 @@ body { margin: 0; background: #0d0505; color: var(--club-ivory); }
 .sound-toggle:hover { background: rgb(60 6 2 / .75); border-color: #fbd57d; }
 .sound-toggle[aria-pressed="true"] { color: #fbd57d; border-color: #fbd57d; }
 .sound-toggle:focus-visible { outline: 2px solid #fbd57d; outline-offset: 3px; }
+
+/* zasunięta kurtyna reaguje na klik/dotyk */
+.stage.is-closed { cursor: pointer; }
+.stage.is-closed .column > * { cursor: pointer; }
