@@ -81,7 +81,7 @@
         body: JSON.stringify({
           name: field('name').value, company: field('company').value, turnover: field('turnover').value,
           phone: field('phone').value, email: field('email').value, consent: field('consent').checked,
-          website: field('website').value,
+          website: field('website').value, lang: document.documentElement.lang,
         }),
       });
       const data = await r.json().catch(() => ({}));

@@ -85,7 +85,7 @@
     try {
       const r = await fetch('/api/apply', {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin',
-        body: JSON.stringify({ type: 'reservation', name: field('name').value, company: field('company').value, phone: field('phone').value, email: field('email').value, seats, consent: field('consent').checked, website: field('website').value }),
+        body: JSON.stringify({ type: 'reservation', name: field('name').value, company: field('company').value, phone: field('phone').value, email: field('email').value, seats, consent: field('consent').checked, website: field('website').value, lang: document.documentElement.lang }),
       });
       const data = await r.json().catch(() => ({}));
       if (r.ok && data.ok) {

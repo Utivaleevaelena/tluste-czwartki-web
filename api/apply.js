@@ -18,6 +18,7 @@ function validate(b) {
     type: reservation ? 'reservation' : 'membership',
     name: clean(b.name, 120), company: clean(b.company, 160), turnover: clean(b.turnover, 60),
     phone: clean(b.phone, 40), email: clean(b.email, 160),
+    lang: b.lang === 'en' ? 'en' : 'pl',                 // język strony, z której wysłano zgłoszenie
   };
   const digits = d.phone.replace(/\D/g, '');
   const errors = {};
@@ -44,8 +45,8 @@ async function deliver(d) {
   }
   if (process.env.RESEND_API_KEY && process.env.APPLICATIONS_TO) {
     const text = reservation
-      ? `Rezerwacja miejsca\n\nWydarzenie: ${EVENT.title} (${EVENT.date})\nImię i nazwisko: ${d.name}\nFirma: ${d.company || '—'}\nLiczba miejsc: ${d.seats}\nTelefon: ${d.phone}\nE-mail: ${d.email}\nZgoda RODO: tak\nData: ${payload.receivedAt}`
-      : `Nowe zgłoszenie do klubu\n\nImię i nazwisko: ${d.name}\nFirma: ${d.company}\nObrót: ${d.turnover}\nTelefon: ${d.phone}\nE-mail: ${d.email}\nZgoda RODO: tak\nData: ${payload.receivedAt}`;
+      ? `Rezerwacja miejsca\n\nWydarzenie: ${EVENT.title} (${EVENT.date})\nImię i nazwisko: ${d.name}\nFirma: ${d.company || '—'}\nLiczba miejsc: ${d.seats}\nTelefon: ${d.phone}\nE-mail: ${d.email}\nZgoda RODO: tak\nJęzyk strony: ${d.lang.toUpperCase()}\nData: ${payload.receivedAt}`
+      : `Nowe zgłoszenie do klubu\n\nImię i nazwisko: ${d.name}\nFirma: ${d.company}\nObrót: ${d.turnover}\nTelefon: ${d.phone}\nE-mail: ${d.email}\nZgoda RODO: tak\nJęzyk strony: ${d.lang.toUpperCase()}\nData: ${payload.receivedAt}`;
     const subject = reservation ? `Rezerwacja miejsca ${EVENT.date}: ${d.name} (${d.seats})` : `Zgłoszenie do klubu: ${d.name} (${d.company})`;
     const r = await fetch('https://api.resend.com/emails', {
       method: 'POST',

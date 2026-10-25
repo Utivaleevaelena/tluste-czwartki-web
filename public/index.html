@@ -196,10 +196,10 @@
         <label for="ap-turnover">Roczny obrót firmy</label>
         <select id="ap-turnover" name="turnover" required>
           <option value="" selected disabled>Wybierz przedział</option>
-          <option>Poniżej 1 mln PLN</option>
-          <option>1–5 mln PLN</option>
-          <option>5–20 mln PLN</option>
-          <option>Powyżej 20 mln PLN</option>
+          <option value="Poniżej 1 mln PLN">Poniżej 1 mln PLN</option>
+          <option value="1–5 mln PLN">1–5 mln PLN</option>
+          <option value="5–20 mln PLN">5–20 mln PLN</option>
+          <option value="Powyżej 20 mln PLN">Powyżej 20 mln PLN</option>
         </select>
         <span class="apply__err" id="ap-turnover-err" hidden>Wybierz przedział obrotu.</span>
       </div>
@@ -232,6 +232,7 @@
   </form>
 </dialog>
 
+<script src="/i18n.js?v=20261026a" defer></script>
 <script src="dzwiek.js?v=20261025c" defer></script>
 <script src="strefa.js?v=20261025c" defer></script>
 <script src="zgloszenie.js?v=20261025c" defer></script>
