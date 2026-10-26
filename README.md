@@ -53,10 +53,10 @@ Na następne wydarzenie: podmień teksty/datę w `index.html` (sekcja `.event`, 
 
 ## Фотогалерея (второй блок на `/private/`, `#fotogaleria`)
 
-Идёт сразу после блока «Relacja ze spotkania». Файлы: `private-content/{gallery.css,gallery.js}`, секция `.gal` в `private-content/index.html`, `assets/gallery-reveal/scene/*` (фон, шторы, сотрудник) и `assets/gallery-reveal/photos/gallery-01..08.jpg`.
+Идёт сразу после блока «Relacja ze spotkania». Файлы: `private-content/{gallery.css,gallery.js}`, секция `.gal` в `private-content/index.html`, `assets/gallery-reveal/scene/*` (фон, шторы, сотрудник) и `assets/gallery-reveal/photos/gallery-main.jpg (główne, pełna szerokość) i gallery-01..14.jpg (dwa ostatnie poziome — klasa gal__item--wide)`.
 Состояния `closed → opening → open → closing`; анимируются только `transform`/`opacity`; reduced-motion — мгновенная смена.
 **Ссылка «POBIERZ ZDJĘCIA»:** атрибут `data-download-href=""` у `<section class="gal">`. Пока пусто — кнопка в состоянии «wkrótce».
-**Фото следующего события:** замените 8 файлов в `assets/gallery-reveal/photos/` и `alt` в `index.html`.
+**Фото следующего события:** замените файлы в `assets/gallery-reveal/photos/` и `alt` в `index.html`.
 
 ## Блок 3: ближайшая встреча — кнопка «REZERWUJ MIEJSCE» (`#rezerwacja` на `/private/`)
 

@@ -109,6 +109,9 @@ html, body { margin: 0; background: var(--gallery-bg); color: var(--gallery-ivor
 /* zdjęcie główne: pełna szerokość siatki, pod nim miniatury */
 .gal__item--main { grid-column: 1 / -1; }
 .gal__item--main .gal__thumb { aspect-ratio: 2.3 / 1; border-width: 1.5px; }
+/* dwa ostatnie kadry (poziome) wypełniają ostatni rząd — po dwie kolumny każdy */
+.gal__item--wide { grid-column: span 2; }
+.gal__item--wide .gal__thumb { aspect-ratio: 2.3 / 1; }
 .gal__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 500ms var(--gallery-ease); }
 .gal__thumb:hover img { transform: scale(1.025); }
 .gal__thumb:focus-visible { outline: 2px solid var(--gallery-focus); outline-offset: 3px; }
@@ -165,6 +168,8 @@ html, body { margin: 0; background: var(--gallery-bg); color: var(--gallery-ivor
   .gal__grid { width: 100%; grid-template-columns: repeat(2, 1fr); gap: 10px; }
   .gal__thumb { aspect-ratio: 3 / 4; }
   .gal__item--main .gal__thumb { aspect-ratio: 3 / 2; }
+  .gal__item--wide { grid-column: auto; }
+  .gal__item--wide .gal__thumb { aspect-ratio: 3 / 4; }
   .gal__foot { width: 100%; flex-direction: column; }
   .gal__download { width: 100%; }
   .gal__eyebrow { letter-spacing: .26em; }

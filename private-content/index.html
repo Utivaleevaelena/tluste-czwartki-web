@@ -68,7 +68,7 @@
 
 <!--
   Blok „fotogaleria po rozsunięciu kurtyn” (wielokrotnego użytku).
-  Następne wydarzenie: podmień 8 zdjęć w assets/gallery-reveal/photos/ (i alt-y poniżej), ewentualnie warstwy sceny w assets/gallery-reveal/scene/.
+  Następne wydarzenie: podmień zdjęcie główne (gallery-main.jpg) i gallery-01..14.jpg w assets/gallery-reveal/photos/ (i alt-y poniżej; dwa ostatnie kadry mają klasę gal__item--wide i powinny być poziome), ewentualnie warstwy sceny w assets/gallery-reveal/scene/.
   Link do pobrania: atrybut data-download-href poniżej (pusty = przycisk pokazuje stan „wkrótce”).
   Link „ZOBACZ POZOSTAŁE ZDJĘCIA” (ostatni slajd powiększenia): data-photos-href; gdy pusty, używany jest data-download-href.
 -->
@@ -94,43 +94,73 @@
             </button>
           </li>
           <li class="gal__item" style="--i:1">
-            <button class="gal__thumb" type="button" data-index="1" aria-label="Powiększ zdjęcie 2 z 9: Rozmowa uczestników spotkania w restauracji">
-              <img src="assets/gallery-reveal/photos/gallery-01.jpg" alt="Rozmowa uczestników spotkania w restauracji" width="1400" height="1050" decoding="async" style="object-position:50% 40%">
+            <button class="gal__thumb" type="button" data-index="1" aria-label="Powiększ zdjęcie 2 z 15: Prowadzący i gość wieczoru przed prezentacją">
+              <img src="assets/gallery-reveal/photos/gallery-01.jpg" alt="Prowadzący i gość wieczoru przed prezentacją" width="1600" height="1067" decoding="async" style="object-position:50% 38%">
             </button>
           </li>
           <li class="gal__item" style="--i:2">
-            <button class="gal__thumb" type="button" data-index="2" aria-label="Powiększ zdjęcie 3 z 9: Uczestnicy spotkania pozujący do zdjęcia">
-              <img src="assets/gallery-reveal/photos/gallery-02.jpg" alt="Uczestnicy spotkania pozujący do zdjęcia" width="1050" height="1400" decoding="async" style="object-position:50% 30%">
+            <button class="gal__thumb" type="button" data-index="2" aria-label="Powiększ zdjęcie 3 z 15: Prowadzący spotkanie wskazujący na ekran z prezentacją">
+              <img src="assets/gallery-reveal/photos/gallery-02.jpg" alt="Prowadzący spotkanie wskazujący na ekran z prezentacją" width="1067" height="1600" decoding="async" style="object-position:50% 38%">
             </button>
           </li>
           <li class="gal__item" style="--i:3">
-            <button class="gal__thumb" type="button" data-index="3" aria-label="Powiększ zdjęcie 4 z 9: Rozmowa uczestników podczas wieczoru biznesowego">
-              <img src="assets/gallery-reveal/photos/gallery-03.jpg" alt="Rozmowa uczestników podczas wieczoru biznesowego" width="1050" height="1400" decoding="async" style="object-position:50% 30%">
+            <button class="gal__thumb" type="button" data-index="3" aria-label="Powiększ zdjęcie 4 z 15: Uczestnicy spotkania przy stole słuchają wystąpienia">
+              <img src="assets/gallery-reveal/photos/gallery-03.jpg" alt="Uczestnicy spotkania przy stole słuchają wystąpienia" width="1600" height="1067" decoding="async" style="object-position:60% 40%">
             </button>
           </li>
           <li class="gal__item" style="--i:4">
-            <button class="gal__thumb" type="button" data-index="4" aria-label="Powiększ zdjęcie 5 z 9: Prowadzący i gość przed rozpoczęciem rozmowy">
-              <img src="assets/gallery-reveal/photos/gallery-04.jpg" alt="Prowadzący i gość przed rozpoczęciem rozmowy" width="1400" height="933" decoding="async" style="object-position:50% 35%">
+            <button class="gal__thumb" type="button" data-index="4" aria-label="Powiększ zdjęcie 5 z 15: Rozmowa prowadzącego z gościem, na pierwszym planie uczestnik">
+              <img src="assets/gallery-reveal/photos/gallery-04.jpg" alt="Rozmowa prowadzącego z gościem, na pierwszym planie uczestnik" width="1600" height="1067" decoding="async" style="object-position:55% 40%">
             </button>
           </li>
           <li class="gal__item" style="--i:5">
-            <button class="gal__thumb" type="button" data-index="5" aria-label="Powiększ zdjęcie 6 z 9: Uczestnicy słuchający wystąpienia">
-              <img src="assets/gallery-reveal/photos/gallery-05.jpg" alt="Uczestnicy słuchający wystąpienia" width="933" height="1400" decoding="async" loading="lazy" style="object-position:50% 28%">
+            <button class="gal__thumb" type="button" data-index="5" aria-label="Powiększ zdjęcie 6 z 15: Prowadzący i uczestnik w dobrych humorach po rozmowie">
+              <img src="assets/gallery-reveal/photos/gallery-05.jpg" alt="Prowadzący i uczestnik w dobrych humorach po rozmowie" width="1600" height="1067" decoding="async" loading="lazy" style="object-position:55% 35%">
             </button>
           </li>
           <li class="gal__item" style="--i:6">
-            <button class="gal__thumb" type="button" data-index="6" aria-label="Powiększ zdjęcie 7 z 9: Uczestnik spotkania podczas dyskusji">
-              <img src="assets/gallery-reveal/photos/gallery-06.jpg" alt="Uczestnik spotkania podczas dyskusji" width="933" height="1400" decoding="async" loading="lazy" style="object-position:50% 28%">
+            <button class="gal__thumb" type="button" data-index="6" aria-label="Powiększ zdjęcie 7 z 15: Prowadzący spotkanie w rozmowie z uczestnikami">
+              <img src="assets/gallery-reveal/photos/gallery-06.jpg" alt="Prowadzący spotkanie w rozmowie z uczestnikami" width="1067" height="1600" decoding="async" loading="lazy" style="object-position:50% 25%">
             </button>
           </li>
           <li class="gal__item" style="--i:7">
-            <button class="gal__thumb" type="button" data-index="7" aria-label="Powiększ zdjęcie 8 z 9: Rozmowa z gościem wieczoru">
-              <img src="assets/gallery-reveal/photos/gallery-07.jpg" alt="Rozmowa z gościem wieczoru" width="1400" height="933" decoding="async" loading="lazy" style="object-position:50% 35%">
+            <button class="gal__thumb" type="button" data-index="7" aria-label="Powiększ zdjęcie 8 z 15: Gość opowiada, a uczestnicy słuchają">
+              <img src="assets/gallery-reveal/photos/gallery-07.jpg" alt="Gość opowiada, a uczestnicy słuchają" width="1600" height="1067" decoding="async" loading="lazy" style="object-position:30% 40%">
             </button>
           </li>
           <li class="gal__item" style="--i:8">
-            <button class="gal__thumb" type="button" data-index="8" aria-label="Powiększ zdjęcie 9 z 9: Gość spotkania podczas rozmowy z uczestnikami">
-              <img src="assets/gallery-reveal/photos/gallery-08.jpg" alt="Gość spotkania podczas rozmowy z uczestnikami" width="933" height="1400" decoding="async" loading="lazy" style="object-position:50% 28%">
+            <button class="gal__thumb" type="button" data-index="8" aria-label="Powiększ zdjęcie 9 z 15: Gość wieczoru opowiada z zaangażowaniem">
+              <img src="assets/gallery-reveal/photos/gallery-08.jpg" alt="Gość wieczoru opowiada z zaangażowaniem" width="1067" height="1600" decoding="async" loading="lazy" style="object-position:50% 28%">
+            </button>
+          </li>
+          <li class="gal__item" style="--i:9">
+            <button class="gal__thumb" type="button" data-index="9" aria-label="Powiększ zdjęcie 10 z 15: Uczestnik spotkania słucha rozmowy z uśmiechem">
+              <img src="assets/gallery-reveal/photos/gallery-09.jpg" alt="Uczestnik spotkania słucha rozmowy z uśmiechem" width="1600" height="1067" decoding="async" loading="lazy" style="object-position:45% 40%">
+            </button>
+          </li>
+          <li class="gal__item" style="--i:10">
+            <button class="gal__thumb" type="button" data-index="10" aria-label="Powiększ zdjęcie 11 z 15: Rozmowa uczestników podczas networkingu">
+              <img src="assets/gallery-reveal/photos/gallery-10.jpg" alt="Rozmowa uczestników podczas networkingu" width="1067" height="1600" decoding="async" loading="lazy" style="object-position:50% 42%">
+            </button>
+          </li>
+          <li class="gal__item" style="--i:11">
+            <button class="gal__thumb" type="button" data-index="11" aria-label="Powiększ zdjęcie 12 z 15: Prowadzący i gość z uśmiechem, za nimi uczestnicy">
+              <img src="assets/gallery-reveal/photos/gallery-11.jpg" alt="Prowadzący i gość z uśmiechem, za nimi uczestnicy" width="1600" height="1067" decoding="async" loading="lazy" style="object-position:35% 40%">
+            </button>
+          </li>
+          <li class="gal__item" style="--i:12">
+            <button class="gal__thumb" type="button" data-index="12" aria-label="Powiększ zdjęcie 13 z 15: Rozmowa uczestników przy lampce wina">
+              <img src="assets/gallery-reveal/photos/gallery-12.jpg" alt="Rozmowa uczestników przy lampce wina" width="1600" height="1067" decoding="async" loading="lazy" style="object-position:55% 35%">
+            </button>
+          </li>
+          <li class="gal__item gal__item--wide" style="--i:13">
+            <button class="gal__thumb" type="button" data-index="13" aria-label="Powiększ zdjęcie 14 z 15: Uczestnicy spotkania oklaskują gościa">
+              <img src="assets/gallery-reveal/photos/gallery-13.jpg" alt="Uczestnicy spotkania oklaskują gościa" width="1600" height="1067" decoding="async" loading="lazy" style="object-position:50% 45%">
+            </button>
+          </li>
+          <li class="gal__item gal__item--wide" style="--i:14">
+            <button class="gal__thumb" type="button" data-index="14" aria-label="Powiększ zdjęcie 15 z 15: Uczestnicy rozmawiają z lampką wina w ręku">
+              <img src="assets/gallery-reveal/photos/gallery-14.jpg" alt="Uczestnicy rozmawiają z lampką wina w ręku" width="1600" height="1067" decoding="async" loading="lazy" style="object-position:50% 45%">
             </button>
           </li>
       </ul>
