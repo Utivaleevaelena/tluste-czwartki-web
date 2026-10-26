@@ -1,11 +1,12 @@
-/* Dźwięk: syntezowany w Web Audio (bez plików). Domyślnie wyłączony; włącza go ikona w rogu (zapamiętywane).
+/* Dźwięk: syntezowany w Web Audio (bez plików). Domyślnie WŁĄCZONY; ikona w rogu go wycisza (wybór zapamiętywany).
    API: ClubSound.key() — klik klawisza, ClubSound.thunk() — przycisk OTWÓRZ/DOŁĄCZ, ClubSound.rustle(0..1) — szelest kurtyny. */
 (() => {
   'use strict';
   const KEY = 'club-sound';
   let ctx = null, master = null, noiseBuf = null, rustleGain = null, rustleSrc = null, curtainNorm = 1, lastLevel = 0;
-  let enabled = false;
-  try { enabled = localStorage.getItem(KEY) === '1'; } catch {}
+  // domyślnie włączony — wyłączony tylko wtedy, gdy użytkownik sam go wyciszył ikoną
+  let enabled = true;
+  try { enabled = localStorage.getItem(KEY) !== '0'; } catch {}
 
   function makeNoise(seconds) {
     const len = Math.floor(ctx.sampleRate * seconds), buf = ctx.createBuffer(1, len, ctx.sampleRate), d = buf.getChannelData(0);
@@ -28,7 +29,7 @@
     master.connect(comp); comp.connect(ctx.destination);
     noiseBuf = makeNoise(2);
 
-    // szelest kurtyny: długie nagranie (114 s) — w pętli gra fragment 4–40 s (równa faktura, bez słyszalnego powtarzania); głośność podąża za prędkością ruchu kurtyny
+    // szelest kurtyny: długie nagranie (114 s) — gra OD SAMEGO POCZĄTKU, potem w pętli fragment 4–40 s; głośność podąża za prędkością ruchu kurtyny
     rustleGain = ctx.createGain(); rustleGain.gain.value = 0; rustleGain.connect(master);
     fetch('/assets/sounds/curtain-rustle.mp3').then((r) => r.arrayBuffer()).then((ab) => new Promise((ok, no) => ctx.decodeAudioData(ab, ok, no)))
       .then((buf) => {
@@ -41,10 +42,16 @@
         curtainNorm = Math.min(.12 / rms, .5 / (p999 || .05));   // nagranie jest bardzo ciche — wyrównujemy głośność
         const src = ctx.createBufferSource(); src.buffer = buf; src.loop = true;
         src.loopStart = 4; src.loopEnd = Math.min(buf.duration, 40);
-        src.connect(rustleGain); src.start(0, 4 + Math.random() * 30);
+        src.connect(rustleGain); src.start(0, 0);   // zawsze od początku nagrania
         rustleSrc = src;
         api.rustle(lastLevel);
       }).catch(() => {});
+  }
+
+  // uruchamia kontekst audio (wymaga gestu użytkownika — polityka autoodtwarzania przeglądarek)
+  function unlock() {
+    init();
+    if (ctx && ctx.state !== 'running') ctx.resume().then(() => api.rustle(lastLevel)).catch(() => {});
   }
 
   const t0 = () => ctx.currentTime;
@@ -108,8 +115,8 @@
     toggle(v) {
       enabled = v === undefined ? !enabled : !!v;
       try { localStorage.setItem(KEY, enabled ? '1' : '0'); } catch {}
-      if (enabled) { init(); ctx && ctx.resume(); }
-      else if (rustleGain) rustleGain.gain.setTargetAtTime(0, ctx.currentTime, .03);
+      if (enabled) unlock();
+      else if (rustleGain) rustleGain.gain.cancelScheduledValues(ctx.currentTime), rustleGain.gain.setTargetAtTime(0, ctx.currentTime, .03);
       paint();
       if (enabled && ctx) api.key(); // potwierdzenie włączenia
     },
@@ -127,29 +134,38 @@
     const label = enabled ? 'Dźwięk włączony — kliknij, aby wyłączyć' : 'Dźwięk wyłączony — kliknij, aby włączyć';
     btn.setAttribute('aria-label', label); btn.title = label;
   }
-  btn.addEventListener('click', () => api.toggle());
+  // pointerdown/keydown nie mogą przełączać — robi to tylko click, więc ikona zawsze reaguje dokładnie raz
+  btn.addEventListener('click', (e) => { e.stopPropagation(); api.toggle(); });
   paint();
   document.body.appendChild(btn);
 
-  // jeśli dźwięk był włączony wcześniej: kontekst audio ruszy dopiero po pierwszym geście (polityka autoodtwarzania).
-  // Przewijanie kółkiem NIE jest takim gestem — dlatego jednorazowa podpowiedź przy ikonie.
-  if (enabled) {
-    init();                       // kontekst powstaje od razu (wstrzymany) i dekoduje nagranie szelestu, zanim padnie pierwszy gest
-    const evs = ['pointerdown', 'touchstart', 'click', 'keydown'];
-    let hint = null;
-    // podpowiedź tylko wtedy, gdy przeglądarka rzeczywiście zablokowała dźwięk do pierwszego gestu
-    setTimeout(() => {
-      if (!ctx || ctx.state === 'running') return;
-      hint = document.createElement('div');
-      hint.className = 'sound-hint'; hint.setAttribute('role', 'status'); hint.textContent = 'Dotknij ekranu, aby uruchomić dźwięk';
-      document.body.appendChild(hint);
-      setTimeout(() => hint && hint.remove(), 7000);
-    }, 400);
-    const wake = () => {
-      init(); ctx && ctx.resume();
-      hint && hint.remove(); evs.forEach((t) => removeEventListener(t, wake, true));
-    };
-    evs.forEach((t) => addEventListener(t, wake, { capture: true, passive: true }));
-  }
+  // Kontekst audio tworzymy od razu (wstrzymany) — nagranie szelestu dekoduje się, zanim padnie pierwszy gest,
+  // więc dźwięk jest gotowy natychmiast. Przeglądarka pozwala go uruchomić dopiero po pierwszym geście
+  // (kliknięcie, dotyk, klawisz; przewijanie kółkiem NIE jest gestem) — dlatego nasłuchujemy pierwszego gestu.
+  init();
+  const evs = ['pointerdown', 'touchend', 'click', 'keydown'];
+  let hint = null;
+  const wake = () => {
+    unlock();
+    if (ctx && ctx.state === 'running') done();
+    else if (ctx) ctx.resume().then(done).catch(() => {});
+  };
+  const done = () => {
+    hint && hint.remove(); hint = null;
+    evs.forEach((t) => removeEventListener(t, wake, true));
+  };
+  evs.forEach((t) => addEventListener(t, wake, { capture: true, passive: true }));
+  // jeśli przeglądarka od razu pozwoliła na dźwięk — nie trzeba czekać na gest
+  if (ctx && ctx.state === 'running') done();
+
+  // podpowiedź tylko wtedy, gdy dźwięk jest włączony, a przeglądarka rzeczywiście zablokowała go do pierwszego gestu
+  setTimeout(() => {
+    if (!enabled || !ctx || ctx.state === 'running') return;
+    hint = document.createElement('div');
+    hint.className = 'sound-hint'; hint.setAttribute('role', 'status'); hint.textContent = 'Dotknij ekranu, aby uruchomić dźwięk';
+    document.body.appendChild(hint);
+    setTimeout(() => { hint && hint.remove(); hint = null; }, 7000);
+  }, 400);
+
   document.addEventListener('visibilitychange', () => { if (!ctx) return; document.hidden ? ctx.suspend() : enabled && ctx.resume(); });
 })();
