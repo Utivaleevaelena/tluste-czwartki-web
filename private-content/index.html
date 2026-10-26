@@ -12,6 +12,8 @@
   <link rel="stylesheet" href="event.css">
   <link rel="stylesheet" href="gallery.css">
   <link rel="stylesheet" href="reservation.css">
+  <link rel="stylesheet" href="camera-story.css">
+  <link rel="preload" as="image" href="assets/camera-story/01-seated-establishing.jpg" fetchpriority="low">
 </head>
 <body>
 
@@ -214,6 +216,113 @@
   </div>
 </section>
 
+<!--
+  Blok 4: motion reklama „Historia marki” — twórcy zdjęć i tej strony + pełny zakres usług cyfrowych.
+  Napisy to żywy HTML (zmieniasz je tu), kadry to czyste zdjęcia bez tekstu w assets/camera-story/.
+  Timing wszystkich scen: zmienne na początku camera-story.css (.cs). Logika startu / powtórki: camera-story.js.
+  Link WhatsApp i numer: element .cs__cta poniżej (data-cs-cta).
+-->
+<section class="cs" id="historia-marki" data-cs data-state="idle" aria-labelledby="cs-title">
+  <h2 class="cs__sr" id="cs-title">Za każdą wielką marką stoi historia, którą warto pokazać. Od twórców zdjęć i tej strony: strategia, identyfikacja, foto i wideo, strona i aplikacja, social media, automatyzacje i lejek sprzedażowy.</h2>
+
+  <div class="cs__stage">
+    <div class="cs__frames" aria-hidden="true">
+      <img class="cs__frame cs__frame--1" src="assets/camera-story/01-seated-establishing.jpg" alt="" width="1672" height="941" decoding="async" loading="lazy">
+      <img class="cs__frame cs__frame--2" src="assets/camera-story/02-camera-raised.jpg" alt="" width="1672" height="941" decoding="async" loading="lazy">
+      <img class="cs__frame cs__frame--3" src="assets/camera-story/03-lens-facing-viewer.jpg" alt="" width="1672" height="941" decoding="async" loading="lazy">
+      <img class="cs__frame cs__frame--4" src="assets/camera-story/04-lens-macro.jpg" alt="" width="1672" height="941" decoding="async" loading="lazy">
+    </div>
+    <div class="cs__shade" aria-hidden="true"></div>
+    <div class="cs__veil" aria-hidden="true"></div>
+    <div class="cs__dim" aria-hidden="true"></div>
+
+    <p class="cs__kicker cs__kicker--corner" aria-hidden="true">OD TWÓRCÓW ZDJĘĆ I TEJ STRONY</p>
+
+    <!-- Napisy na zdjęciach (po kolei, jeden naraz) -->
+    <div class="cs__lines" aria-hidden="true">
+      <p class="cs__line cs__line--left cs__line--1"><span class="cs__txt">ZA KAŻDĄ<br>WIELKĄ<br>MARKĄ</span></p>
+      <p class="cs__line cs__line--right cs__line--2"><span class="cs__txt">STOI<br>HISTORIA,</span></p>
+      <p class="cs__line cs__line--right cs__line--3"><span class="cs__txt">KTÓRĄ<br>WARTO<br>POKAZAĆ.</span></p>
+      <p class="cs__line cs__line--center cs__line--lens cs__line--4a"><span class="cs__txt">ZDJĘCIA SĄ<br>POCZĄTKIEM.</span></p>
+      <p class="cs__line cs__line--center cs__line--lens cs__line--4b"><span class="cs__txt">BUDUJEMY CAŁĄ<br>DROGĘ MARKI.</span></p>
+      <p class="cs__line cs__line--center cs__line--m1"><span class="cs__txt">OD POMYSŁU<br>DO GOTOWEGO<br>SYSTEMU.</span></p>
+      <p class="cs__line cs__line--center cs__line--m2"><span class="cs__txt">WSZYSTKO<br>Z JEDNYCH<br>RĄK.</span></p>
+    </div>
+
+    <!-- Schemat: radialny na desktopie, pionowa ścieżka KIERUNEK / OBRAZ / SYSTEM na telefonie (ten sam kod, inny układ w CSS) -->
+    <div class="cs__graph" aria-hidden="true">
+      <div class="cs__radial">
+        <svg class="cs__links" viewBox="0 0 1000 620" preserveAspectRatio="none" focusable="false">
+          <path class="cs__link" style="--i:0" pathLength="1" d="M500 310 500 75"/>
+          <path class="cs__link" style="--i:1" pathLength="1" d="M500 310 781 164"/>
+          <path class="cs__link" style="--i:2" pathLength="1" d="M500 310 851 362"/>
+          <path class="cs__link" style="--i:3" pathLength="1" d="M500 310 656 522"/>
+          <path class="cs__link" style="--i:4" pathLength="1" d="M500 310 344 522"/>
+          <path class="cs__link" style="--i:5" pathLength="1" d="M500 310 149 362"/>
+          <path class="cs__link" style="--i:6" pathLength="1" d="M500 310 219 164"/>
+        </svg>
+
+        <div class="cs__core"><span>TWÓJ BIZNES</span></div>
+
+        <ul class="cs__nodes">
+          <li class="cs__grp" style="--i:0">KIERUNEK</li>
+          <li class="cs__node" style="--i:0; --x:50; --y:12.1">
+            <span class="cs__ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5 13.5 13.5 8.5 15.5 10.5 10.5Z"/></svg></span>
+            <span class="cs__lbl">STRATEGIA</span>
+          </li>
+          <li class="cs__node" style="--i:1; --x:78.1; --y:26.4">
+            <span class="cs__ico"><svg viewBox="0 0 24 24"><path d="M12 3 21 12 12 21 3 12Z"/><circle cx="12" cy="12" r="3"/></svg></span>
+            <span class="cs__lbl">IDENTYFIKACJA</span>
+          </li>
+          <li class="cs__grp" style="--i:2">OBRAZ</li>
+          <li class="cs__node" style="--i:2; --x:85.1; --y:58.4">
+            <span class="cs__ico">
+              <svg viewBox="0 0 24 24"><path d="M4 8.5h3l1.5-2.5h7L17 8.5h3a1 1 0 0 1 1 1V18a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5a1 1 0 0 1 1-1Z"/><circle cx="12" cy="13.5" r="3.5"/></svg>
+              <svg viewBox="0 0 24 24"><rect x="2.5" y="6.5" width="12.5" height="11" rx="2"/><path d="M15 10.5 21.5 7.5v9L15 13.5"/></svg>
+            </span>
+            <span class="cs__lbl">FOTO I WIDEO</span>
+          </li>
+          <li class="cs__node" style="--i:3; --x:65.6; --y:84.1">
+            <span class="cs__ico"><svg viewBox="0 0 24 24"><rect x="2.5" y="4.5" width="14.5" height="10" rx="1.5"/><path d="M6 18.5h7M9.75 14.5v4"/><rect x="17.5" y="9.5" width="4" height="9" rx="1.2"/></svg></span>
+            <span class="cs__lbl">STRONA I APLIKACJA</span>
+          </li>
+          <li class="cs__node" style="--i:4; --x:34.4; --y:84.1">
+            <span class="cs__ico"><svg viewBox="0 0 24 24"><path d="M4 5.5h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-9l-4.5 3.5v-3.5H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1Z"/><path d="M8 10h8M8 13h5"/></svg></span>
+            <span class="cs__lbl">SOCIAL MEDIA</span>
+          </li>
+          <li class="cs__grp" style="--i:5">SYSTEM</li>
+          <li class="cs__node" style="--i:5; --x:14.9; --y:58.4">
+            <span class="cs__ico"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.2"/><circle cx="18" cy="8" r="2.2"/><circle cx="12" cy="18" r="2.2"/><path d="M8.2 6.4 15.8 7.6M7 8l4 8M17 10.2 13 16"/></svg></span>
+            <span class="cs__lbl">AUTOMATYZACJE</span>
+          </li>
+          <li class="cs__node" style="--i:6; --x:21.9; --y:26.4">
+            <span class="cs__ico"><svg viewBox="0 0 24 24"><path d="M3.5 5h17l-6.5 7.5V19l-4 1.5v-8Z"/></svg></span>
+            <span class="cs__lbl">LEJEK SPRZEDAŻOWY</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Finał: podpis, nagłówek, CTA (zostaje po zakończeniu animacji) -->
+    <div class="cs__final">
+      <p class="cs__kicker cs__rise">OD TWÓRCÓW ZDJĘĆ I TEJ STRONY</p>
+      <p class="cs__final-title cs__rise">POROZMAWIAJMY<br>O TWOJEJ MARCE</p>
+      <p class="cs__services cs__rise">STRATEGIA · FOTO · WIDEO · WWW<br>APLIKACJE · SOCIAL MEDIA · AUTOMATYZACJE</p>
+      <a class="cs__cta cs__rise" data-cs-cta target="_blank" rel="noopener noreferrer"
+         href="https://wa.me/48884037664?text=Dzie%C5%84%20dobry%2C%20chc%C4%99%20porozmawia%C4%87%20o%20cyfrowej%20oprawie%20mojej%20marki."
+         aria-label="Napisz na WhatsApp pod numer +48 884 037 664 (otwiera się w nowej karcie)">
+        <span class="cs__cta-main">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-9l-4.5 3.5v-3.5H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1Z"/><path d="M8 10h8M8 13h5"/></svg>
+          <span>NAPISZ NA WHATSAPP</span>
+        </span>
+        <span class="cs__cta-num" aria-hidden="true">+48 884 037 664</span>
+      </a>
+    </div>
+
+    <button class="cs__replay" type="button" data-cs-replay>ODTWÓRZ PONOWNIE</button>
+  </div>
+</section>
+
 <!-- Okno rezerwacji -->
 <dialog class="rsv" id="rsv-dialog" aria-labelledby="rsv-title" data-rsv>
   <form class="rsv__form" method="post" novalidate data-rsv-form>
@@ -276,5 +385,6 @@
 <script src="/dzwiek.js" defer></script>
 <script src="gallery.js" defer></script>
 <script src="reservation.js" defer></script>
+<script src="camera-story.js" defer></script>
 </body>
 </html>

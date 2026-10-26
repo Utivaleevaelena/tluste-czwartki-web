@@ -1,0 +1,230 @@
+/* Blok 4 — motion reklama „Historia marki” (twórcy zdjęć i tej strony).
+   Animacja uruchamiana raz (camera-story.js), potem zostaje finał z przyciskiem WhatsApp.
+   Animujemy tylko transform / opacity (+ stroke-dashoffset linii schematu i visibility przy wejściu CTA).
+   Cały czas animacji jest w zmiennych na początku .cs — tam zmieniasz timing. Teksty: camera-story w index.html. */
+.cs {
+  /* ── TIMING (sekundy od startu animacji) ───────────────────────────── */
+  --t-f2: 1.6s;        /* wejście kadru 2 (aparat podniesiony) */
+  --t-f3: 3.2s;        /* kadr 3 (obiektyw w stronę widza) */
+  --t-f4: 4.9s;        /* kadr 4 (makro obiektywu) */
+  --t-xf: .6s;         /* czas crossfade między kadrami */
+  --kick-s: .1s;  --kick-d: 4.8s;     /* podpis w lewym górnym rogu */
+  --l1-s: .2s;    --l1-d: 1.5s;       /* ZA KAŻDĄ WIELKĄ MARKĄ */
+  --l2-s: 1.75s;  --l2-d: 1.5s;       /* STOI HISTORIA, */
+  --l3-s: 3.35s;  --l3-d: 1.6s;       /* KTÓRĄ WARTO POKAZAĆ. */
+  --l4a-s: 5.05s; --l4a-d: 1.05s;     /* ZDJĘCIA SĄ POCZĄTKIEM. */
+  --l4b-s: 6.05s; --l4b-d: 1.3s;      /* BUDUJEMY CAŁĄ DROGĘ MARKI. */
+  --t-dim: 6.4s;       /* przyciemnienie obiektywu pod schemat */
+  --t-core: 7.3s;      /* węzeł TWÓJ BIZNES */
+  --t-nodes: 7.5s;     /* pierwszy element schematu; kolejne co --stagger */
+  --stagger: .15s;
+  --t-collapse: 10.4s; --d-collapse: .6s;   /* schemat zbiega się do środka */
+  --m1-s: 11s;    --m1-d: 1.2s;       /* OD POMYSŁU DO GOTOWEGO SYSTEMU. */
+  --m2-s: 12.2s;  --m2-d: 1.3s;       /* WSZYSTKO Z JEDNYCH RĄK. */
+  --t-final: 13.4s;    /* podpis + nagłówek finału */
+  --t-cta: 14.2s;      /* przycisk WhatsApp */
+  --t-end: 15.2s;      /* koniec — wtedy pojawia się „ODTWÓRZ PONOWNIE” */
+
+  --ease-out: cubic-bezier(.23, 1, .32, 1);
+  --ease-io: cubic-bezier(.77, 0, .175, 1);
+  --cs-bg: var(--event-bg, #050403);
+  --cs-text: var(--event-text, #f6f1e8);
+  --cs-gold: var(--event-gold, #d7aa70);
+  --cs-gold-soft: var(--event-gold-soft, #b98b53);
+  --cs-focus: var(--event-focus, #f1c98e);
+  --cs-sans: var(--event-sans, "Manrope", "Helvetica Neue", Arial, sans-serif);
+  --cs-gutter: var(--event-page-gutter, clamp(24px, 4.5vw, 78px));
+  --stage-h: clamp(560px, 82svh, 900px);
+  --fs: clamp(34px, 4.7vw, 68px);          /* duże slogany */
+  --fs-lens: clamp(26px, 3.4vw, 48px);     /* napisy w obiektywie */
+
+  position: relative; isolation: isolate; overflow: hidden; width: 100%;
+  background: var(--cs-bg); color: var(--cs-text); font-family: var(--cs-sans);
+}
+.cs *, .cs *::before, .cs *::after { box-sizing: border-box; }
+.cs__sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; list-style: none; }
+
+.cs__stage { position: relative; min-height: var(--stage-h); overflow: hidden; background: var(--cs-bg); }
+
+/* ── Kadry ──────────────────────────────────────────────────────────── */
+.cs__frames { position: absolute; inset: 0; z-index: 0; }
+.cs__frame { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; transform-origin: 50% 50%; }
+.cs__frame--1 { opacity: 1; }
+.cs__frame--2, .cs__frame--3, .cs__frame--4 { opacity: 0; }
+.cs__frame--2 { transform-origin: 40% 45%; }
+.cs__frame--3 { transform-origin: 42% 45%; }
+
+/* Przyciemnienia: stałe pod napisami, soczewka pod napisami w obiektywie, przyciemnienie pod schematem */
+.cs__shade { position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background:
+    linear-gradient(90deg, rgb(5 4 3 / .66) 0%, rgb(5 4 3 / 0) 40%, rgb(5 4 3 / 0) 60%, rgb(5 4 3 / .64) 100%),
+    linear-gradient(180deg, rgb(5 4 3 / .4) 0%, rgb(5 4 3 / 0) 24%, rgb(5 4 3 / 0) 68%, rgb(5 4 3 / .6) 100%); }
+.cs__veil { position: absolute; inset: 0; z-index: 2; pointer-events: none; opacity: 0;
+  background: radial-gradient(ellipse 42% 38% at 50% 50%, rgb(5 4 3 / .72), rgb(5 4 3 / 0) 100%); }
+.cs__dim { position: absolute; inset: 0; z-index: 3; pointer-events: none; opacity: 0;
+  background: radial-gradient(ellipse at 50% 50%, rgb(5 4 3 / .56) 0%, rgb(5 4 3 / .82) 78%); }
+
+/* ── Podpis w rogu ──────────────────────────────────────────────────── */
+.cs__kicker { margin: 0; display: flex; align-items: center; gap: 14px; font: 600 clamp(10px, .86vw, 13px) / 1.2 var(--cs-sans); letter-spacing: .32em; text-transform: uppercase; color: var(--cs-gold); }
+.cs__kicker::before { content: ""; width: clamp(22px, 2.6vw, 40px); height: 1px; background: var(--cs-gold-soft); flex: none; }
+.cs__kicker--corner { position: absolute; z-index: 5; top: clamp(18px, 3vw, 40px); left: var(--cs-gutter); opacity: 0; pointer-events: none; }
+
+/* ── Napisy na zdjęciach ────────────────────────────────────────────── */
+.cs__lines { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
+.cs__line { position: absolute; inset: 0; margin: 0; display: flex; align-items: center; padding-inline: var(--cs-gutter); }
+.cs__line--left { justify-content: flex-start; text-align: left; }
+.cs__line--right { justify-content: flex-end; text-align: left; padding-right: calc(var(--cs-gutter) * 1.5); }
+.cs__line--center { justify-content: center; text-align: center; }
+.cs__txt { display: block; opacity: 0; font: 600 var(--fs) / 1.04 var(--cs-sans); letter-spacing: .012em; text-transform: uppercase; color: var(--cs-text);
+  text-shadow: 0 2px 28px rgb(0 0 0 / .6), 0 0 3px rgb(0 0 0 / .35); }
+.cs__line--lens .cs__txt { font-size: var(--fs-lens); line-height: 1.08; letter-spacing: .03em; }
+
+/* ── Schemat „TWÓJ BIZNES” ──────────────────────────────────────────── */
+.cs__graph { position: absolute; inset: 0; z-index: 4; display: flex; align-items: center; justify-content: center; padding: 0 var(--cs-gutter); pointer-events: none; }
+.cs__radial { position: relative; container-type: inline-size; aspect-ratio: 1000 / 620;
+  width: min(100%, 1000px, calc((var(--stage-h) - 96px) * 1.6129)); }
+.cs__links { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.cs__link { fill: none; stroke: var(--cs-gold-soft); stroke-opacity: .6; stroke-width: 1.4; stroke-dasharray: 1; stroke-dashoffset: 1; }
+.cs__nodes { display: contents; margin: 0; padding: 0; list-style: none; }
+.cs__grp { display: none; }
+
+.cs__core { position: absolute; left: 50%; top: 50%; z-index: 2; display: grid; place-items: center; min-width: clamp(120px, 21cqw, 210px); padding: clamp(12px, 1.8cqw, 18px) clamp(16px, 2.4cqw, 28px);
+  transform: translate(-50%, -50%); opacity: 0; border-radius: 999px; background: rgb(8 5 4 / .94); border: 1px solid var(--cs-gold);
+  box-shadow: 0 0 0 5px rgb(215 170 112 / .1), 0 0 36px rgb(179 9 20 / .32); }
+.cs__core span { font: 600 clamp(11px, 1.6cqw, 17px) / 1 var(--cs-sans); letter-spacing: .2em; text-transform: uppercase; color: #fff3dd; white-space: nowrap; }
+
+.cs__node { position: absolute; z-index: 1; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%); transform: translate(-50%, -50%); opacity: 0;
+  display: flex; align-items: center; gap: clamp(8px, 1.1cqw, 12px); padding: clamp(5px, .8cqw, 8px) clamp(12px, 1.8cqw, 20px) clamp(5px, .8cqw, 8px) clamp(5px, .8cqw, 8px);
+  border-radius: 999px; background: rgb(8 5 4 / .9); border: 1px solid rgb(215 170 112 / .5); white-space: nowrap; }
+.cs__ico { display: inline-flex; align-items: center; justify-content: center; gap: 2px; flex: none; min-width: clamp(28px, 4.2cqw, 42px); height: clamp(28px, 4.2cqw, 42px); padding-inline: 5px;
+  border-radius: 999px; border: 1px solid rgb(215 170 112 / .55); color: var(--cs-gold); }
+.cs__ico svg { width: clamp(15px, 2.2cqw, 22px); height: clamp(15px, 2.2cqw, 22px); flex: none; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.cs__lbl { font: 600 clamp(10px, 1.3cqw, 14.5px) / 1 var(--cs-sans); letter-spacing: .12em; text-transform: uppercase; color: var(--cs-text); }
+
+/* ── Finał ──────────────────────────────────────────────────────────── */
+.cs__final { position: absolute; inset: 0; z-index: 6; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: clamp(18px, 3vh, 32px);
+  padding: clamp(56px, 8vh, 96px) var(--cs-gutter); text-align: center; pointer-events: none; }
+.cs__rise { opacity: 0; visibility: hidden; }
+.cs__final-title { margin: 0; font: 600 clamp(32px, 5vw, 66px) / 1.04 var(--cs-sans); letter-spacing: .012em; text-transform: uppercase; color: var(--cs-text); text-shadow: 0 2px 28px rgb(0 0 0 / .6); }
+.cs__services { display: none; margin: 0; font: 500 clamp(11px, 1vw, 14px) / 1.9 var(--cs-sans); letter-spacing: .18em; text-transform: uppercase; color: #e6dccb; }
+
+.cs__cta { pointer-events: auto; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; width: min(100%, 420px); min-height: 84px; padding: 14px 28px; text-decoration: none; cursor: pointer;
+  color: #f6e8cc; background: linear-gradient(180deg, #8a0d1a 0%, #750813 55%, #5f0610 100%); border: 1px solid #c99645; border-radius: 999px;
+  box-shadow: inset 0 0 0 2px rgb(255 224 170 / .12), inset 0 1px 0 rgb(255 235 200 / .35), 0 6px 14px rgb(0 0 0 / .5), 0 0 0 1px rgb(0 0 0 / .4);
+  transition: background 200ms ease, box-shadow 200ms ease, transform 120ms ease; }
+.cs__cta-main { display: inline-flex; align-items: center; gap: 12px; font: 600 clamp(15px, 1.4vw, 21px) / 1 var(--cs-sans); letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; }
+.cs__cta-main svg { width: 24px; height: 24px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.cs__cta-num { font: 500 clamp(12px, 1vw, 15px) / 1 var(--cs-sans); letter-spacing: .14em; color: #f0d9ae; }
+.cs__cta:hover { background: linear-gradient(180deg, #a3101f 0%, #930b18 55%, #750813 100%); box-shadow: inset 0 0 0 2px rgb(255 224 170 / .2), inset 0 1px 0 rgb(255 235 200 / .45), 0 0 18px rgb(224 189 117 / .38), 0 6px 14px rgb(0 0 0 / .5); }
+.cs__cta:active { background: #56060d; transform: translateY(2px) scale(.985); }
+.cs__cta:focus-visible { outline: 2px solid var(--cs-focus); outline-offset: 4px; }
+
+.cs__replay { position: absolute; z-index: 7; right: var(--cs-gutter); bottom: clamp(16px, 3vh, 32px); padding: 10px 4px; cursor: pointer; visibility: hidden; opacity: 0;
+  font: 600 clamp(10px, .82vw, 12px) / 1 var(--cs-sans); letter-spacing: .28em; text-transform: uppercase; color: #cfc6b9; background: none; border: 0; border-bottom: 1px solid rgb(215 170 112 / .5); transition: color 180ms ease, border-color 180ms ease; }
+.cs__replay:hover { color: #fff3dd; border-color: var(--cs-gold); }
+.cs__replay:focus-visible { outline: 2px solid var(--cs-focus); outline-offset: 4px; }
+.cs[data-state="done"] .cs__replay { visibility: visible; opacity: 1; transition: opacity .4s ease, color 180ms ease, border-color 180ms ease; }
+
+/* ── Animacja: tylko gdy data-run (stan playing / done) ─────────────── */
+.cs[data-run] .cs__frame { will-change: transform, opacity; }
+.cs[data-run] .cs__frame--1 { animation: cs-push-1 calc(var(--t-f2) + var(--t-xf)) var(--ease-io) both; }
+.cs[data-run] .cs__frame--2 { animation: cs-fade var(--t-xf) var(--ease-io) var(--t-f2) both, cs-pan-2 calc(var(--t-f3) - var(--t-f2) + var(--t-xf)) var(--ease-io) var(--t-f2) both; }
+.cs[data-run] .cs__frame--3 { animation: cs-fade var(--t-xf) var(--ease-io) var(--t-f3) both, cs-push-3 calc(var(--t-f4) - var(--t-f3) + var(--t-xf)) var(--ease-io) var(--t-f3) both; }
+.cs[data-run] .cs__frame--4 { animation: cs-fade var(--t-xf) var(--ease-io) var(--t-f4) both, cs-push-4 1.8s var(--ease-io) var(--t-f4) both; }
+.cs[data-run] .cs__veil { animation: cs-fade var(--t-xf) var(--ease-out) var(--t-f4) both; }
+.cs[data-run] .cs__dim { animation: cs-fade 1.2s var(--ease-io) var(--t-dim) both; }
+
+.cs[data-run] .cs__kicker--corner { animation: cs-kicker var(--kick-d) linear var(--kick-s) both; }
+.cs[data-run] .cs__line--1 .cs__txt { animation: cs-line var(--l1-d) linear var(--l1-s) both; }
+.cs[data-run] .cs__line--2 .cs__txt { animation: cs-line var(--l2-d) linear var(--l2-s) both; }
+.cs[data-run] .cs__line--3 .cs__txt { animation: cs-line var(--l3-d) linear var(--l3-s) both; }
+.cs[data-run] .cs__line--4a .cs__txt { animation: cs-line var(--l4a-d) linear var(--l4a-s) both; }
+.cs[data-run] .cs__line--4b .cs__txt { animation: cs-line var(--l4b-d) linear var(--l4b-s) both; }
+.cs[data-run] .cs__line--m1 .cs__txt { animation: cs-line var(--m1-d) linear var(--m1-s) both; }
+.cs[data-run] .cs__line--m2 .cs__txt { animation: cs-line var(--m2-d) linear var(--m2-s) both; }
+
+.cs[data-run] .cs__core { animation: cs-core-in .6s var(--ease-out) var(--t-core) both, cs-fade-out .4s var(--ease-io) calc(var(--t-collapse) + .2s) forwards; }
+.cs[data-run] .cs__link { animation: cs-draw .55s linear calc(var(--t-nodes) + var(--i) * var(--stagger)) both, cs-fade-out .4s var(--ease-io) var(--t-collapse) forwards; }
+.cs[data-run] .cs__node { animation: cs-node-in .5s var(--ease-out) calc(var(--t-nodes) + var(--i) * var(--stagger) + .25s) both, cs-node-out var(--d-collapse) var(--ease-io) var(--t-collapse) forwards; }
+
+.cs[data-run] .cs__final .cs__kicker { animation: cs-rise .8s var(--ease-out) var(--t-final) both; }
+.cs[data-run] .cs__final-title { animation: cs-rise .8s var(--ease-out) calc(var(--t-final) + .25s) both; }
+.cs[data-run] .cs__cta { animation: cs-rise .8s var(--ease-out) var(--t-cta) both; }
+
+@keyframes cs-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes cs-fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes cs-push-1 { from { transform: scale(1); } to { transform: scale(1.035); } }
+@keyframes cs-pan-2 { from { transform: scale(1.05) translateX(2.2%); } to { transform: scale(1.07) translateX(-1.2%); } }
+@keyframes cs-push-3 { from { transform: scale(1.02); } to { transform: scale(1.075); } }
+@keyframes cs-push-4 { from { transform: scale(1); } to { transform: scale(1.06); } }
+@keyframes cs-line {
+  0%   { opacity: 0; transform: translateY(22px); animation-timing-function: cubic-bezier(.23, 1, .32, 1); }
+  20%  { opacity: 1; transform: translateY(0); }
+  82%  { opacity: 1; transform: translateY(0); animation-timing-function: cubic-bezier(.77, 0, .175, 1); }
+  100% { opacity: 0; transform: translateY(-10px); }
+}
+@keyframes cs-kicker { 0% { opacity: 0; } 6% { opacity: 1; } 92% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes cs-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes cs-core-in { from { opacity: 0; transform: translate(-50%, -50%) scale(.82); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+@keyframes cs-node-in { from { opacity: 0; transform: translate(-50%, -50%) scale(.82); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+@keyframes cs-node-out {
+  from { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  to { opacity: 0; transform: translate(calc(-50% + (50 - var(--x)) * 1cqw), calc(-50% + (50 - var(--y)) * .62cqw)) scale(.4); }
+}
+@keyframes cs-rise {
+  from { opacity: 0; visibility: hidden; transform: translateY(18px); }
+  to { opacity: 1; visibility: visible; }
+}
+
+/* ── Wersja statyczna: reduced-motion albo brak JS ──────────────────── */
+.cs[data-state="static"] .cs__frame--4, .cs:not([data-js]) .cs__frame--4 { opacity: 1; transform: scale(1.06); }
+.cs[data-state="static"] .cs__dim, .cs:not([data-js]) .cs__dim { opacity: 1; }
+.cs[data-state="static"] .cs__rise, .cs:not([data-js]) .cs__rise { opacity: 1; visibility: visible; }
+.cs[data-state="static"] .cs__services, .cs:not([data-js]) .cs__services { display: block; }
+.cs[data-state="static"] .cs__rise { animation: cs-fade .2s linear both; }
+.cs[data-state="static"] .cs__graph, .cs:not([data-js]) .cs__graph { display: none; }
+
+/* ── Telefon / wąski ekran: schemat jako pionowa ścieżka 3 grup ─────── */
+@media (max-width: 860px) {
+  .cs { --stage-h: clamp(640px, 100svh, 880px); --fs: clamp(32px, 10.4vw, 44px); --fs-lens: clamp(28px, 8.4vw, 36px); --cs-gutter: 20px; }
+  .cs__frame--1 { object-position: 57% 50%; }
+  .cs__frame--2 { object-position: 36% 50%; }
+  .cs__frame--3 { object-position: 42% 50%; }
+  .cs__frame--4 { object-position: 50% 50%; }
+  .cs__shade { background:
+      linear-gradient(180deg, rgb(5 4 3 / .5) 0%, rgb(5 4 3 / 0) 22%, rgb(5 4 3 / 0) 38%, rgb(5 4 3 / .86) 100%); }
+  .cs__line--left, .cs__line--right { align-items: flex-end; justify-content: flex-start; padding: 0 var(--cs-gutter) clamp(44px, 9svh, 84px); }
+
+  .cs__graph { align-items: center; justify-content: flex-start; padding: 64px var(--cs-gutter) 40px 24px; }
+  .cs__radial { container-type: normal; aspect-ratio: auto; width: 100%; max-width: 420px; margin-inline: auto; }
+  .cs__links { display: none; }
+  .cs__core { position: relative; left: auto; top: auto; transform: none; display: inline-grid; margin: 0 0 22px; min-width: 0; padding: 13px 22px; }
+  .cs__core span { font-size: 12px; }
+  .cs__nodes { display: block; position: relative; padding-left: 36px; }
+  .cs__nodes::before { content: ""; position: absolute; left: 13px; top: -22px; bottom: 14px; width: 1px; background: linear-gradient(180deg, var(--cs-gold) 0%, rgb(215 170 112 / .25) 100%);
+    transform-origin: top; opacity: 0; }
+  .cs__grp { display: block; position: relative; margin: 16px 0 9px; font: 600 10px / 1 var(--cs-sans); letter-spacing: .32em; color: var(--cs-gold); opacity: 0; }
+  .cs__grp:first-child { margin-top: 0; }
+  .cs__grp::before { content: ""; position: absolute; left: -27px; top: 50%; width: 9px; height: 9px; margin-top: -4.5px; border-radius: 50%; background: var(--cs-bg); border: 1px solid var(--cs-gold); }
+  .cs__node { position: relative; left: auto; top: auto; transform: none; width: fit-content; margin: 0 0 8px; gap: 9px; padding: 5px 16px 5px 5px; }
+  .cs__ico { min-width: 30px; height: 30px; }
+  .cs__ico svg { width: 17px; height: 17px; }
+  .cs__lbl { font-size: 11.5px; letter-spacing: .1em; }
+
+  .cs[data-run] .cs__nodes::before { animation: cs-rail 1.6s linear var(--t-core) both, cs-fade-out .4s var(--ease-io) var(--t-collapse) forwards; }
+  .cs[data-run] .cs__grp { animation: cs-node-in-m .45s var(--ease-out) calc(var(--t-nodes) + var(--i) * var(--stagger) + .12s) both, cs-node-out-m var(--d-collapse) var(--ease-io) var(--t-collapse) forwards; }
+  .cs[data-run] .cs__node { animation: cs-node-in-m .5s var(--ease-out) calc(var(--t-nodes) + var(--i) * var(--stagger) + .25s) both, cs-node-out-m var(--d-collapse) var(--ease-io) var(--t-collapse) forwards; }
+  .cs[data-run] .cs__core { animation: cs-core-in-m .6s var(--ease-out) var(--t-core) both, cs-node-out-m var(--d-collapse) var(--ease-io) calc(var(--t-collapse) + .1s) forwards; }
+  @keyframes cs-rail { from { opacity: 1; transform: scaleY(0); } to { opacity: 1; transform: scaleY(1); } }
+  @keyframes cs-node-in-m { from { opacity: 0; transform: translateX(-14px); } to { opacity: 1; transform: translateX(0); } }
+  @keyframes cs-node-out-m { from { opacity: 1; transform: translateY(0) scale(1); } to { opacity: 0; transform: translateY(-26px) scale(.94); } }
+  @keyframes cs-core-in-m { from { opacity: 0; transform: scale(.88); } to { opacity: 1; transform: scale(1); } }
+
+  .cs__final { padding-block: 72px 56px; }
+  .cs__cta { min-height: 76px; }
+  .cs__replay { right: 50%; transform: translateX(50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cs[data-run] *, .cs[data-run] *::before { animation-duration: .01ms !important; animation-delay: 0s !important; }
+}

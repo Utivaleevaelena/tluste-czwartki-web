@@ -69,3 +69,11 @@ Na następne wydarzenie: podmień teksty/datę w `index.html` (sekcja `.event`, 
 
 `public/i18n.js` — переключатель «PL | EN» (справа сверху под иконкой звука) и словарь «польский текст → английский». Подключён на всех страницах (`/`, `/private/`, `/private/materialy/`). Язык запоминается в браузере; по умолчанию — польский (английский включается переключателем или `?lang=en`); `?lang=en` / `?lang=pl` задаёт язык явно.
 Переводятся текстовые узлы и атрибуты (`aria-label`, `title`, `placeholder`, `alt`), а также сообщения, которые вставляют скрипты (форма, код, галерея). Нужен новый перевод — добавить пару в объект `EN` в начале `i18n.js`. Названия (Tłuste Czwartki, Tłusta Kaczka, имена) не переводятся; кнопки-картинки OTWÓRZ и DOŁĄCZ — графика с польским текстом. В письмах о заявках язык сайта указывается строкой «Język strony».
+
+## Blok 4: motion reklama „Historia marki” (`#historia-marki` na `/private/`)
+
+Idzie po bloku rezerwacji. Pliki: `private-content/{camera-story.css,camera-story.js}`, sekcja `.cs` w `private-content/index.html`, kadry `private-content/assets/camera-story/01..04-*.jpg` (JPG q88 z czystych PNG 16:9 z `02-private-table-assets/.../frames-no-text/`).
+Napisy to żywy HTML (edytuj w `index.html`; sceny napisów: `.cs__line--*`, schemat: `.cs__node`, finał: `.cs__final`). **Timing wszystkich scen** — zmienne `--t-*`, `--l*-s/-d`, `--m*-s/-d` na początku `camera-story.css` (`.cs`).
+Start jednorazowy przy ~35% sekcji w viewport (IntersectionObserver), stop na finale, potem przycisk „ODTWÓRZ PONOWNIE”. Animowane: tylko `transform`/`opacity` (+ `stroke-dashoffset` linii schematu).
+`prefers-reduced-motion` i brak JS: statyczny kadr 4 + skrócony zakres usług + CTA (stan `data-state="static"`). Telefon (≤860 px): schemat zmienia się w pionową ścieżkę KIERUNEK / OBRAZ / SYSTEM.
+CTA WhatsApp: element `[data-cs-cta]` (numer i `?text=` w `href`). Kliknięcie wysyła zdarzenie `creator-ad:whatsapp-click` na `window` i `dataLayer.push({event:'creator_ad_whatsapp_click'})` (jeśli `dataLayer` istnieje). Teksty bloku nie mają jeszcze wersji EN w `i18n.js`.
