@@ -312,3 +312,7 @@ body:has(dialog[open]) .sound-toggle { opacity: 0; pointer-events: none; }
   max-width: min(60vw, 260px); padding: 8px 12px; border: 1px solid rgb(251 213 125 / .45); border-radius: 6px; background: rgb(17 3 3 / .85);
   font: 500 11px / 1.35 var(--sans, "Montserrat", sans-serif); letter-spacing: .08em; color: #fcf4e6; pointer-events: none;
 }
+
+/* telefon: podwójne dotknięcie nie przybliża strony */
+html, body, * { touch-action: manipulation; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
